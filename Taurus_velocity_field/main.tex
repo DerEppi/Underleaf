@@ -2,7 +2,7 @@
 \documentclass{UniVieCS_Thesis} 
 
 %add the additional packages and macros that you want to use
-\input{A) Front Matter/packages_macros}
+\input{packages_macros}
 \microtypesetup{expansion=false} % Fix: font expansion only works with scalable fonts
 
 % important update for glossaries, before document 
@@ -20,12 +20,8 @@
 \begin{document}
 
 %Start with front matter
-
-%Choose the titlepage you want to use
-
-%\input{A) Front Matter/titlepage_msc} %Creates the titlepage
 \input{A) Front Matter/titlepage_bsc} %Creates the titlepage
-%\input{A) Front Matter/titlepage_phd} %Creates the titlepage
+
 
 \clearpage
 \frontmatter{}
@@ -39,31 +35,36 @@
 % Use an optional list of tables / figures / algorithms / listings(code).
 %\listoftables
 %\listoffigures
-\cleardoublepage{}
+%\cleardoublepage{}
 %\listofalgorithms
-\addcontentsline{toc}{chapter}{List of Algorithms}
-\cleardoublepage{}
+%\addcontentsline{toc}{chapter}{List of Algorithms}
+%\cleardoublepage{}
 %\lstlistoflistings
-\cleardoublepage{}
+%\cleardoublepage{}
 \microtypesetup{protrusion=true}
 
 \pagebreak
 
 %add your chapters here
 \mainmatter{}
-\input{B) Chapters/00_Introduction}
-\input{B) Chapters/01_Taurus}
-\input{!Template Chapters/00_using_the_template}
-\input{!Template Chapters/01_ordinary_text}
-\input{!Template Chapters/02_displayed_text}
-\input{!Template Chapters/03_tables_and_images}
-\input{!Template Chapters/04_code}
-\input{!Template Chapters/05_algorithms}
-\input{!Template Chapters/06_acronyms_and_glossary}
-\input{!Template Chapters/07_macros}
+\input{B) Chapters/01_Introduction}
+\input{B) Chapters/02_Taurus}
+\input{B) Chapters/03_Nifty}
+\input{B) Chapters/04_Results}
+\input{B) Chapters/05_Discussion}
+\input{B) Chapters/06_Conclusion}
+
+%\input{!Template Chapters/00_using_the_template}
+%\input{!Template Chapters/01_ordinary_text}
+%\input{!Template Chapters/02_displayed_text}
+%\input{!Template Chapters/03_tables_and_images}
+%\input{!Template Chapters/04_code}
+%\input{!Template Chapters/05_algorithms}
+%\input{!Template Chapters/06_acronyms_and_glossary}
+%\input{!Template Chapters/07_macros}
 
 %add your sources in the bib file and change the style here
-\bibliographystyle{plain}
+\bibliographystyle{abbrvnat}   % oder mnras, aa, plainnat
 \bibliography{bibliography}
 
 \printglossary[type=\acronymtype]
