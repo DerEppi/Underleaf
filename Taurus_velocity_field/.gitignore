@@ -1,3 +1,7 @@
-build/
+\!build/
 
 *.md
+
+main.*
+!main.pdf
+!main.tex
