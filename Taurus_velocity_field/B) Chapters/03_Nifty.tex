@@ -1,31 +1,242 @@
 \chapter{Methods}
 \label{sec:Methods}
 
-\section{Dataset}
-\label{sec:dataset}
-
-The analysis is based on a catalog of 557 stars associated with the Taurus molecular cloud, combining the membership list of \citet{Luhman2023} with the SigMA clustering algorithm of \citet{Ratzenboeck2023a_SigMA}, both derived from Gaia~DR3 astrometry. For each star the catalog provides the full astrometric solution: equatorial coordinates ($\alpha$, $\delta$), trigonometric parallax $\varpi$ and proper motions in right ascension and declination ($\mu_{\alpha*}$, $\mu_\delta$) together with radial velocities where available, all with their respective uncertainties. As a quality indicator for the astrometric solution serves the renormalized unit weight error (RUWE). All 557 stars possess proper motion measurements, while radial velocities are available for only 180 of them, representing roughly one third of the sample. Photometric data are provided in the form of the Gaia $G$-band magnitude and the colors $G-G_\mathrm{RP}$ and $G_\mathrm{BP}-G_\mathrm{RP}$. Stellar ages, visual extinctions $A_V$, and masses, obtained through isochrone fitting with the \textsc{Chronos} algorithm \citep{Ratzenboeck2023b_Chronos}, are included for a subset of the sample.
-
-The three-dimensional heliocentric Galactic Cartesian positions $(X, Y, Z)$ and corresponding velocity components $(U, V, W)$ are computed from the astrometric and radial-velocity data, with the $X$-axis pointing toward the Galactic center, $Y$ in the direction of Galactic rotation, and $Z$ toward the Galactic north pole.\fxnote{Unklar: Werden die Distanzen direkt aus $1/\varpi$ berechnet, oder aus der Parallaxen-Posterior gezogen (nur das 68.2\%-Kredibilit\"atsintervall behalten), wie es eine fr\"uhere Textversion behauptet hat? Bitte im Code pr\"ufen und hier kurz erg\"anzen -- relevant bei gr\"o{\ss}eren Parallaxenfehlern.}
-
-Prior to inference, the sample is filtered to remove unreliable measurements. Radial velocities outside the range $[-30, 50]~\mathrm{km\,s^{-1}}$ are excluded, as well as stars with uncertainties on their RV measurement greater than XXXX. Such cuts were made only for the RV data because it had far greater uncertainties than the proper motions (+ binaries). Due to the limited number of stars with radial-velocity measurements, this range is set deliberately wide in order to retain as many data points as possible, excluding only the most obvious outliers that are clearly inconsistent with membership in Taurus. Stars with $\mathrm{RUWE} > 1.4$ are additionally excluded from the radial-velocity likelihood, as elevated RUWE values are indicative of unresolved binary systems or a poor astrometric solution that may bias the velocity measurement \citep{Lindegren2021}. Here too, a fixed value was chosen above a position-dependent RUWE threshold derived from the Gaia Unlimited binary selection function \citep{gaiaunlimited}, in order to include as many radial velocities as possible. The resulting catalog spans a spatial volume of roughly $120 \times 75 \times 75~\mathrm{pc}$ around Taurus, discretized on a grid with a cell size of $3~\mathrm{pc}$ per dimension, matching the resolution at which the velocity field is later reconstructed.
-
 \section{Information Field Theory}
 \label{sec:ift}
 
-Only a fraction of the stars in the catalog have measured radial velocities, while proper motions, and thus two of the three velocity components, are available for essentially the full sample. Rather than analyzing individual stars or predefined subgroups separately, this thesis combines all of this information into a single, continuous three-dimensional velocity field that describes the motion of Taurus everywhere within the studied volume. However, only at the locations of observed stars does the field yield any meaningful results.
+Only a fraction of the stars in our catalog have measured radial velocities, while proper
+motions, and thus two of the three velocity components, are available for essentially the
+full sample. Rather than analyzing individual stars or predefined subgroups separately,
+this thesis combines all of this information into a continuous, three-dimensional
+velocity field that describes the motion of Taurus, thereby making use of the full stellar
+sample rather than only the subset of members for which all three velocity components are
+measured.
 
-This is a common problem in astrophysics: a continuous physical quantity, here a velocity field, must be reconstructed from a finite, noisy set of measurements. Information field theory (IFT) is a Bayesian framework designed specifically for this kind of problem \citep{Ensslin2023_ITIFT,Ensslin2025}. Instead of treating the unknown field as a small set of parameters, such as the coefficients of a simple analytic function, IFT treats it as the object to be inferred directly: the field is allowed, in principle, to take on any value at any point in space, and its shape is constrained purely by the data and by a set of reasonable prior assumptions.
+This is a common problem in physics: a continuous physical quantity, here a velocity
+field, must be reconstructed from a finite, noisy set of measurements. Information field
+theory (IFT) is a Bayesian framework designed specifically for this kind of problem
+\citep{Ensslin2023_ITIFT,Ensslin2025}. Instead of treating the unknown field as a small
+set of parameters, such as the coefficients of a simple analytic function, IFT treats it
+as the object to be inferred directly. The field, denoted $s$, can take on any value at any
+point in space and can therefore be seen as an infinite-dimensional random variable. Its
+shape is constrained purely by the data $d$ and by a set of prior assumptions.
 
-The key prior assumption used here is that the velocity field is spatially correlated: nearby points are expected to have similar velocities, while the field can vary more or less smoothly depending on the physical scale being considered. This kind of prior is commonly implemented as a Gaussian process, whose correlation properties are described by a power spectrum encoding how much power, i.e.\ variation, the field has on large versus small scales. Given this prior and the observed proper motions and radial velocities, Bayes' theorem in principle yields a posterior probability distribution over all possible velocity fields consistent with the data. In practice, this posterior cannot be written down or sampled from exactly, because the number of unknowns, the field value at every grid point, is far too large. IFT provides the mathematical machinery to approximate this posterior numerically, and to do so in a way that also returns uncertainty estimates for the reconstructed field, not just a single best-fit map.
+Formally, the quantity of interest is the posterior probability $\mathcal{P}(s\mid d)$ of
+the field given the data. Bayes' theorem relates this posterior to the likelihood
+$\mathcal{P}(d\mid s)$, which describes how the data are generated from a given field
+configuration, and to the prior $\mathcal{P}(s)$, which encodes expectations about the
+field before any data are taken into account:
+\begin{equation}
+    \mathcal{P}(s \mid d) = \frac{\mathcal{P}(d \mid s)\,\mathcal{P}(s)}{\mathcal{P}(d)} \, .
+    \label{eq:bayes}
+\end{equation}
+The evidence $\mathcal{P}(d)$ acts purely as a normalization constant and does not depend on
+the field $s$. For the inference of $s$ it is therefore irrelevant and, as is common in many
+Bayesian approaches, never has to be evaluated explicitly; only the shape of the posterior as
+a function of $s$ matters. IFT recasts this relation in terms of an information Hamiltonian $\mathcal{H}(d,s)
+    \equiv -\ln\mathcal{P}(d,s)$, so that the posterior takes the form $\mathcal{P}(s\mid d)
+    \propto e^{-\mathcal{H}(d,s)}$. Because the posterior probability decreases exponentially
+with $\mathcal{H}$, the most probable field configuration is the one that minimizes
+$\mathcal{H}$ with $\mathcal{H}$ playing the role of an energy whose lowest-energy state is the
+best-fit field. The posterior, however, assigns a probability to every possible field, not only to this
+one. How far the field can be varied away from the optimum before it becomes implausible
+is what defines the uncertainty of the reconstruction
+\citep{Ensslin2023_ITIFT,Ensslin2025}.
+
+The key prior assumption used here is that the velocity field is spatially correlated:
+nearby points are expected to have similar velocities, while the field can vary more or
+less smoothly depending on the physical scale being considered. This kind of prior is
+commonly implemented as a Gaussian process, whose correlation properties are described by
+a power spectrum encoding how much power, i.e.\ variation, the field has on large versus
+small scales. In practice, the posterior in Eq.~(\ref{eq:bayes}) cannot be written down or
+sampled from exactly, because the number of unknowns, the field value at every grid point,
+is far too large. IFT provides the mathematical machinery to approximate this posterior
+numerically, and to do so in a way that also returns uncertainty estimates for the
+reconstructed field, not just a single best-fit map.
 
 \section{NIFTy - Numerical Information Field Theory}
 \label{sec:nifty}
 
-The numerical implementation of IFT used in this thesis is \textsc{NIFTy}~\citep[\textsc{NIFTy.re};][]{Edenhofer2024}, a Python package built on \textsc{JAX} that extends the original \textsc{NIFTy} framework \citep{niftycl} with ready-to-use building blocks for correlated field models and for the variational inference algorithms needed to approximate the posterior described in Section~\ref{sec:ift}.
+The numerical implementation of IFT used in this thesis is
+\texttt{NIFTy}~\citep[\texttt{NIFTy.re};][]{Edenhofer2024}, a Python package built on
+\texttt{JAX} that extends the original \texttt{NIFTy} framework \citep{niftycl} with
+building blocks for correlated field models and for the variational inference
+algorithms needed to approximate the posterior described before.
 
-Concretely, the three-dimensional velocity field is modeled on a regular grid spanning the volume introduced in Section~\ref{sec:dataset}, with a cell size of $3~\mathrm{pc}$. Each velocity component is represented as a \textsc{NIFTy} correlated field: a constant offset, corresponding to the expected bulk motion of Taurus as a whole, plus a spatially correlated deviation from that offset whose typical smoothness, i.e.\ how much small-scale versus large-scale structure is allowed, is itself inferred from the data rather than fixed by hand.
+The three-dimensional velocity field is modeled on a regular grid spanning the
+volume later discussed in Section~\ref{sec:dataset}, with a cell size of $3~\mathrm{pc}$.
+Representing the field on this grid makes the inference computationally manageable, replacing an infinite
+number of parameters with a finite, though still large, set of values. Each
+velocity component $s$ is represented as a \texttt{NIFTy} correlated field, separated
+into a constant offset $s_0$, corresponding to the expected bulk motion of Taurus as a
+whole, and a spatially correlated deviation $\delta(\mathbf{x})$ from that offset,
+\begin{equation}
+    s(\mathbf{x}) = s_0 + \delta(\mathbf{x}) \, .
+    \label{eq:correlatedfield}
+\end{equation}
+The deviation is generated in Fourier space as
+\begin{equation}
+    \delta(\mathbf{x}) = \mathrm{FT}^{-1}\!\left[\sqrt{P(k)}\,\xi(\mathbf{k})\right]\!(\mathbf{x}) \, ,
+    \label{eq:deviation}
+\end{equation}
+where $\xi(\mathbf{k})$ are a-priori standard-normal Fourier coefficients and $P(k)$ is
+the power spectrum, which sets how much power the fluctuation has on a given spatial scale
+$k^{-1}$. Rather than fixing $P(k)$ by hand, its overall amplitude and slope are
+themselves treated as free parameters and inferred from the data, allowing the typical
+smoothness of the reconstructed field, i.e.\ how much small-scale versus large-scale
+structure is present, to be determined by the observations rather than assumed a priori.
 
-This general modeling strategy, a correlated field with a flexible, data-driven power spectrum, follows and adapts the approach of \citet{Hutschenreuter2026}, who used the same underlying model and code to reconstruct the 3D velocity field of the Scorpius-Centaurus OB association. With a sample of only about 550 stars in Taurus, splitting the inferred motion into multiple separate kinematic components was not expected to be a meaningful or well-constrained distinction; a single correlated field per velocity component is therefore sufficient to capture the bulk motion and its spatial structure across the region.
+This general modeling strategy, a correlated field with a flexible, data-driven power
+spectrum, follows and adapts the approach of \citet{Hutschenreuter2026}, who used the same
+underlying model and code to reconstruct the three-dimensional velocity field of the
+Sco-Cen OB association. As introduced above, each of the three Cartesian velocity
+components is inferred separately as its own correlated field, and the three reconstructions
+together form the full three-dimensional velocity field. Given the modest size of the Taurus
+sample of about 550 stars, the model is kept deliberately simple: each component is described
+by a single correlated field, without attempting to separate the region into several
+kinematically distinct populations, as was done for Sco-Cen, since the data would not
+reliably constrain such a model.
 
-Before the field itself is inferred, the noise properties of the stellar velocity measurements are estimated directly from the data, since the nominal Gaia uncertainties do not necessarily capture the full observational error budget. Given the noise model and the correlated-field priors, the posterior distribution over the velocity field is then approximated using \textsc{NIFTy}'s variational inference scheme: the algorithm iteratively refines an approximate posterior by alternating between updating the most probable field configuration and drawing an increasing number of posterior samples around it, in order to capture the local shape of the posterior more accurately as the fit converges. The final result of this procedure is a set of posterior samples of the full 3D velocity field, from which both a mean velocity map and a corresponding uncertainty (standard deviation) map are computed at every grid point, providing the reconstructed velocity field of Taurus together with a quantitative estimate of its reliability.
+In the likelihood, each measured stellar velocity is treated as the value of the underlying
+field at the star's position plus additive Gaussian measurement noise. Because the nominal
+Gaia uncertainties do not necessarily capture the full observational error, for example
+because unmodeled stellar peculiar motions or unresolved binary systems add scatter beyond the
+reported values, the noise level of the radial velocities is not fixed to the reported values
+but is rescaled by a $\eta$ parameter per star that is estimated from the data. This data-driven noise
+estimation is applied only to the radial-velocity measurements. The proper motions are kept at
+their reported Gaia uncertainties. A further intrinsic-scatter parameter that would also
+account for the stars' peculiar velocities in the proper motions was not included in the model
+used here, but its effects are examined in the Discussion (Section~\ref{sec:Discussion}). Given this
+noise model and the correlated-field priors, the posterior distribution over the velocity
+field is then
+approximated using \texttt{NIFTy}'s variational inference scheme
+\citep{Knollmueller2020,Frank2021}. Instead of the
+exact posterior $\mathcal{P}(s\mid d)$ from Eq.~(\ref{eq:bayes}), a simpler,
+typically Gaussian, distribution $\mathcal{Q}(s)$ is introduced and fit to the posterior
+by minimizing the Kullback--Leibler divergence
+\begin{equation}
+    D_{\mathrm{KL}}(\mathcal{Q} \,\|\, \mathcal{P}) = \int \mathcal{D}s\; \mathcal{Q}(s)\,\ln\frac{\mathcal{Q}(s)}{\mathcal{P}(s\mid d)} \, ,
+    \label{eq:kl}
+\end{equation}
+which is zero only if $\mathcal{Q}$ exactly matches the true posterior. Expressing the posterior
+through Bayes' theorem (Eq.~(\ref{eq:bayes}))
+reduces the objective to quantities the model provides explicitly: the likelihood and
+the prior. In practice, the
+algorithm iteratively refines this approximation by alternating between updating the most
+probable field configuration and drawing an increasing number of posterior samples around
+it, in order to capture the local shape of the posterior more accurately as the fit
+converges. The final result of this procedure is a set of posterior samples of the full 3D
+velocity field, from which both a mean velocity map and a corresponding uncertainty
+(standard deviation) map are computed at every grid point, providing the reconstructed
+velocity field of Taurus together with an estimate of its reliability
+\citep{Knollmueller2020,Frank2021}.
+
+\section{Dataset}
+\label{sec:dataset}
+
+The analysis is based on a catalog of 557 stars associated with the Taurus molecular
+cloud, identified with the \texttt{SigMA} clustering algorithm of
+\citet{Ratzenboeck2023a_SigMA} applied to Gaia~DR3 astrometry \citep{GaiaCollaboration2023}.
+Members that also appear in the census of \citet{Luhman2023} are flagged as such.
+For each star the catalog provides the full astrometric solution: equatorial
+coordinates ($\alpha$, $\delta$), trigonometric parallax $\varpi$ and proper motions in
+right ascension and declination ($\mu_{\alpha*}$, $\mu_\delta$) together with radial
+velocities, where available, all with their respective uncertainties. As a quality
+indicator for the astrometric solution serves the renormalized unit weight error (RUWE).
+All 557 stars possess proper motion measurements, while radial velocities are available
+for only 180 of them, representing roughly one third of the sample
+(Figure~\ref{fig:dataset_positions}). Photometric data are provided in the form of the
+Gaia $G$-band magnitude and the colors $G-G_\mathrm{RP}$ and $G_\mathrm{BP}-G_\mathrm{RP}$.
+Stellar ages, visual extinctions $A_V$, and masses, obtained through isochrone fitting
+with the \texttt{Chronos} algorithm \citep{Ratzenboeck2023b_Chronos}, are included for a
+subset of the sample.
+
+The three-dimensional heliocentric Galactic Cartesian positions $(X, Y, Z)$ and
+corresponding velocity components $(U, V, W)$ are computed from the astrometric and
+radial-velocity data, with the $X$-axis pointing toward the Galactic center, $Y$ in the
+direction of Galactic rotation, and $Z$ toward the Galactic north pole.
+
+Before any field reconstruction, several properties of the data can already be analyzed
+directly. Figure~\ref{fig:dataset_xz_age} shows the
+stellar positions projected onto the $X$--$Z$ plane, colored by stellar age. The members are
+not uniformly distributed but fall into several spatially separated groups that also differ in
+age. The population spans ages from 1 to 15~Myr. This range differs from the median ages of
+$1$--$3$~Myr quoted in Section~\ref{sec:Taurus}, both because the ages here are determined
+differently and because a different clustering is used, which additionally includes some older
+groups that were not yet part of the census of \citet{Luhman2023}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figures/xz_age.pdf}
+    \caption{Positions of the catalog stars projected onto the $X$--$Z$ plane, colored by
+        stellar age. Stars shown in grey have no age data available. Several spatially
+        separated groups are visible, indicating that star formation in Taurus is both
+        clustered and spread out in age.}
+    \label{fig:dataset_xz_age}
+\end{figure}
+
+The distribution of the measured radial velocities and their uncertainties gives a first
+indication of the data quality.
+Figure~\ref{fig:dataset_rv} shows a histogram of all available radial velocities alongside the
+distribution of their reported uncertainties. The bulk of the measurements clusters around the
+systemic velocity of Taurus, while a small number of clear outliers lie well outside the
+plausible range, and a fraction of the measurements carry large uncertainties. Both features
+motivate the filtering described below.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/rv_hist.pdf}
+        \caption{Radial velocities.}
+        \label{fig:dataset_rv_values}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/rv_error_hist.pdf}
+        \caption{Radial-velocity uncertainties.}
+        \label{fig:dataset_rv_errors}
+    \end{subfigure}
+    \caption{Distribution of the measured radial velocities (left) and their reported
+        uncertainties (right) for the 180 stars with available radial velocities. Outliers
+        beyond the adopted velocity range and measurements with large uncertainties
+        are visible in the tails.}
+    \label{fig:dataset_rv}
+\end{figure}
+
+Prior to inference, the sample is filtered to remove unreliable measurements. Radial
+velocities outside the range $[-30, 50]~\mathrm{km\,s^{-1}}$ are excluded, as well as
+stars with uncertainties on their RV measurement greater than PLACEHOLDER. These cuts are applied
+only to the radial-velocity measurements, since proper motions carry substantially smaller
+uncertainties and are less strongly biased by unresolved binaries, which can
+significantly bias individual radial-velocity values \citep{CastroGinard2024}. Due to the limited number of stars
+with radial-velocity measurements, these ranges are set deliberately wide in order to retain
+as many data points as possible, excluding only the most obvious outliers that are clearly
+inconsistent with membership in Taurus. Stars with $\mathrm{RUWE} > 1.4$ are additionally
+excluded from the radial-velocity likelihood, as elevated RUWE values are indicative of
+unresolved binary systems or a poor astrometric solution that may bias the velocity
+measurement \citep{Lindegren2021}. Here too, a fixed value was chosen above a
+position-dependent RUWE threshold derived from the Gaia Unlimited binary selection
+function \citep{gaiaunlimited}, in order to include as many radial velocities as possible.
+Retaining a larger number of measurements avoids overfitting from an insufficient amount
+of data and provides the algorithm with more information to constrain the field, while
+genuine outliers are still smoothed out by its spatially correlated prior.
+
+The resulting catalog spans a
+spatial volume of roughly $120 \times 75 \times 75~\mathrm{pc}$ around Taurus, discretized
+on a grid with a cell size of $3~\mathrm{pc}$ per dimension, matching the resolution at
+which the velocity field is later reconstructed. It includes all 557 proper motion
+measurements and 112 radial velocity values left after the quality cuts.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/rv_used.png}
+    \caption{Three-dimensional heliocentric Galactic Cartesian positions of the 557
+        catalog stars. Stars for which a radial-velocity measurement was used in the analysis
+        (112 stars) are highlighted in a different color from the remaining
+        proper-motion-only members. Vector-based illustrations of the
+        three-dimensional velocities are provided in
+        Appendix~\ref{app:vectorplots}.}
+    \label{fig:dataset_positions}
+\end{figure}

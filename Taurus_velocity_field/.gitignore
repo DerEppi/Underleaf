@@ -5,3 +5,6 @@
 main.*
 !main.pdf
 !main.tex
+
+!figures/*.pdf
+!!literature/*.pdf

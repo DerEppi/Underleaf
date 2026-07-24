@@ -1,13 +1,3 @@
-@book{lamport94,
-  author = {Leslie Lamport},
-  edition = {Second},
-  note = {User's Guide and Reference Manual},
-  publisher = {Addison-Wesley},
-  title = {\LaTeX\ -- A Document Preparation System},
-  year = {1994}
-}
-
-
 @article{Zucker2022,
   author  = {Zucker, Catherine and Goodman, Alyssa A. and Alves, Jo{\~a}o
              and Bialy, Shmuel and Foley, Michael and Speagle, Joshua S.
@@ -135,15 +125,13 @@
 }
 
 
-@online{ESA2017Taurus,
+@misc{ESA2017Taurus,
   author       = {{ESA/Herschel/NASA/JPL-Caltech}},
   title        = {Herschel's View of the {Taurus} Molecular Cloud},
   year         = {2017},
   month        = sep,
-  day          = {20},
-  organization = {European Space Agency},
-  url          = {https://www.esa.int/ESA_Multimedia/Images/2017/09/Herschel_s_view_of_the_Taurus_molecular_cloud},
-  urldate      = {2026-06-28}
+  howpublished = {\url{https://www.esa.int/ESA_Multimedia/Images/2017/09/Herschel_s_view_of_the_Taurus_molecular_cloud}},
+  note         = {European Space Agency; accessed 2026-06-28},
 }
 
 
@@ -173,17 +161,6 @@
   doi     = {10.1051/0004-6361/202557273},
 }
 
-@article{Ensslin2019,
-  author  = {En{\ss}lin, Torsten A.},
-  title   = {Information Theory for Fields},
-  journal = {Annalen der Physik},
-  year    = {2019},
-  volume  = {531},
-  number  = {3},
-  pages   = {1800127},
-  doi     = {10.1002/andp.201800127},
-}
-
 @article{Edenhofer2024,
   author  = {Edenhofer, Gordian and Frank, Philipp and Roth, Jakob and Leike,
              Reimar H. and Guerdi, Massin and Scheel-Platz, Lukas I. and
@@ -197,6 +174,28 @@
   number  = {98},
   pages   = {6593},
   doi     = {10.21105/joss.06593},
+}
+
+@article{Frank2021,
+  author  = {Frank, Philipp and Leike, Reimar and En{\ss}lin, Torsten A.},
+  title   = {Geometric Variational Inference},
+  journal = {Entropy},
+  year    = {2021},
+  volume  = {23},
+  number  = {7},
+  pages   = {853},
+  doi     = {10.3390/e23070853},
+}
+
+@misc{Knollmueller2020,
+  author        = {Knollm{\"u}ller, Jakob and En{\ss}lin, Torsten A.},
+  title         = {Metric {Gaussian} Variational Inference},
+  year          = {2020},
+  eprint        = {1901.11033},
+  archivePrefix = {arXiv},
+  primaryClass  = {stat.ML},
+  note          = {arXiv:1901.11033},
+  doi           = {10.48550/arXiv.1901.11033},
 }
 
 
@@ -220,6 +219,19 @@ archivePrefix = {arXiv},
 }
 
 
+@article{Bialy2021,
+  author  = {Bialy, Shmuel and Zucker, Catherine and Goodman, Alyssa and Foley, Michael M.
+             and Alves, Jo{\~a}o and Semenov, Vadim A. and Benjamin, Robert and Leike, Reimar
+             and En{\ss}lin, Torsten},
+  title   = {The {Per-Tau} Shell: A Giant Star-forming Spherical Shell Revealed by {3D} Dust Observations},
+  journal = {The Astrophysical Journal Letters},
+  year    = {2021},
+  volume  = {919},
+  number  = {1},
+  pages   = {L5},
+  doi     = {10.3847/2041-8213/ac1f95},
+}
+
 @article{Ochsendorf2015,
   author  = {Ochsendorf, Bram B. and Brown, Anthony G. A. and Bally, John and Tielens, Alexander G. G. M.},
   title   = {Nested Shells Reveal the Rejuvenation of the {Orion-Eridanus} Superbubble},
@@ -232,30 +244,33 @@ archivePrefix = {arXiv},
 }
 
 
-@article{GaiaCollaboration2021,
-  author  = {{Gaia Collaboration} and Brown, A. G. A. and Vallenari, A. and Prusti, T. and de Bruijne, J. H. J. and Babusiaux, C. and others},
-  title   = {{Gaia} Early Data Release 3: Summary of the contents and survey properties},
+@article{GaiaCollaboration2023,
+  author  = {{Gaia Collaboration} and Vallenari, A. and Brown, A. G. A. and Prusti, T. and de Bruijne, J. H. J. and Arenou, F. and Babusiaux, C. and others},
+  title   = {{Gaia} Data Release 3: Summary of the content and survey properties},
   journal = {Astronomy \& Astrophysics},
-  year    = {2021},
-  volume  = {649},
+  year    = {2023},
+  volume  = {674},
   pages   = {A1},
-  doi     = {10.1051/0004-6361/202039657},
+  doi     = {10.1051/0004-6361/202243940},
 }
 
 @misc{Ensslin2023_ITIFT,
-  author = {En{\ss}lin, Torsten A.},
-  title  = {Information Theory \& Information Field Theory},
-  year   = {2023},
-  note   = {Lecture notes, version March 27, 2023},
+  author       = {En{\ss}lin, Torsten A.},
+  title        = {Information Theory \& Information Field Theory},
+  year         = {2023},
+  howpublished = {\url{https://wwwmpa.mpa-garching.mpg.de/~ensslin/lectures/Files/ScriptIT&IFT.pdf}},
+  note         = {Version March 27, 2023},
 }
 
-@article{Ensslin2025,
+@misc{Ensslin2025,
   author        = {En{\ss}lin, Torsten A.},
   title         = {Information Field Theory: Concepts, Applications, and {AI}-Perspective},
   year          = {2025},
-  archiveprefix = {arXiv},
   eprint        = {2508.17269},
+  archivePrefix = {arXiv},
   primaryClass  = {astro-ph.IM},
+  note          = {arXiv:2508.17269},
+  doi           = {10.48550/arXiv.2508.17269},
 }
 
 @article{CastroGinard2024,
@@ -276,4 +291,14 @@ archivePrefix = {arXiv},
 	year = 2023,
 	volume = 678,
 	pages = "A71",
+}
+
+@article{BlandHawthorn2016,
+  author  = {Bland-Hawthorn, Joss and Gerhard, Ortwin},
+  title   = {The {Galaxy} in Context: Structural, Kinematic, and Integrated Properties},
+  journal = {Annual Review of Astronomy and Astrophysics},
+  year    = {2016},
+  volume  = {54},
+  pages   = {529--596},
+  doi     = {10.1146/annurev-astro-081915-023441},
 }
