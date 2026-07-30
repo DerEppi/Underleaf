@@ -96,21 +96,23 @@ amplitude and slope are inferred from the data, so that the balance between smal
 large-scale structure is set by the observations rather than assumed a priori.
 
 In the likelihood, the data enter as observables rather than as space velocities: for each
-star the field is evaluated at its position and projected onto the two proper-motion components
+star the field is evaluated at its position through interpolation (Further discussed in Section~\ref{sec:Results}) and projected onto the two proper-motion components
 on the sky and, where available, the radial
-velocity along the line of sight, with additive Gaussian measurement noise. A star without a
+velocity along the line of sight, with additive Gaussian measurement noise.
+A star without a
 radial velocity therefore constrains the field only within the plane of the sky, but since the
 prior correlates neighbouring positions, its missing component is supplied by the stars around
 it. This is what allows the full sample to be used instead of only the part of it with
-complete velocities. Because the nominal
+complete velocities.
+
+Because the nominal
 Gaia uncertainties do not necessarily capture the full observational error, for example
 because unmodeled stellar peculiar motions or unresolved binary systems add scatter beyond the
 reported values, the noise level of the radial velocities is not fixed to the reported values
-but is rescaled by an $\eta$ parameter per star that is estimated from the data. This data-driven noise
-estimation is applied only to the radial-velocity measurements. The proper motions are kept at
-their reported Gaia uncertainties. A further intrinsic-scatter parameter that would also
-account for the stars' peculiar velocities in the proper motions was not included in the model
-used here, but its effects are examined in the Discussion (Section~\ref{sec:Discussion}).
+but is rescaled by an $\eta$ parameter per star that is estimated from the data.
+This data-driven noise estimation is applied only to the radial-velocity measurements.
+The proper motions are kept at their reported Gaia uncertainties.
+A further intrinsic-scatter parameter that would also account for the stars' peculiar velocities in the proper motions was not included in the model used here, but its effects are examined in the Discussion (Section~\ref{sec:Discussion}).
 
 Given this likelihood and the correlated-field priors, the posterior distribution over the
 velocity field is then approximated using \texttt{NIFTy}'s variational inference scheme,
@@ -171,24 +173,41 @@ Before any field reconstruction, several properties of the data can already be a
 directly. Figure~\ref{fig:dataset_xz_age} shows the
 stellar positions projected onto the $X$--$Z$ plane, colored by stellar age. The members are
 not uniformly distributed but fall into several spatially separated groups that also differ in
-age. The population spans ages from 1 to 15~Myr, a wider range than the median ages of
+age. With a visible age gradient between the two big subgroups as well as a small spatially distinct group
+of older stars (15~Myr).
+Considering the velocity data, the right ascension proper motion values further reveal a correlation between stellar ages and velocity as seen in comparison to Figure~\ref{fig:pmra_xz}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/xz_age.pdf}
+        \caption{Stellar ages}
+        \label{fig:dataset_xz_age}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/pmra_gradient.pdf}
+        \caption{Right ascension proper motion}
+        \label{fig:pmra_xz}
+    \end{subfigure}
+    \caption{Positions of the catalog stars projected onto the $X$--$Z$ plane, colored by
+        stellar age (left) and right ascension proper motion data (right).
+        Stars shown in grey have no data available. Several spatially
+        separated groups are visible, indicating that star formation in Taurus is both
+        clustered and spread out in age.}
+    \label{fig:age_vel_comp}
+\end{figure}
+
+The population spans ages from 1 to 15~Myr, a wider range than the median ages of
 $1$--$3$~Myr quoted in Section~\ref{sec:Taurus}. This is mainly a question of membership:
 the clustering used here also recovers comoving groups of $\sim$12--15~Myr that
 \citet{Luhman2023} assigns to neighbouring associations rather than to Taurus itself.
 The ages in the two catalogs are moreover determined with different methods. The bulk of the
 sample is nonetheless young with most of the stars between 1 and 7~Myr, and the distribution
 peaks at 3~Myr, in agreement with the median group ages of $1$--$3$~Myr reported by
-\citet{Luhman2023}.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.65\linewidth]{figures/xz_age.pdf}
-    \caption{Positions of the catalog stars projected onto the $X$--$Z$ plane, colored by
-        stellar age. Stars shown in grey have no age data available. Several spatially
-        separated groups are visible, indicating that star formation in Taurus is both
-        clustered and spread out in age.}
-    \label{fig:dataset_xz_age}
-\end{figure}
+\citet{Luhman2023}. The age distribution of the catalog is shown in appendix~\ref{app:age_hist}.
 
 Additionally, Figure~\ref{fig:CMD} shows a color-magnitude diagram (CMD) of the catalog,
 colored by age to highlight the different subgroups, with isochrones for
@@ -232,38 +251,31 @@ motivate the filtering described below.
     \label{fig:dataset_rv}
 \end{figure}
 
-Before constructing the field, the sample is filtered to remove unreliable measurements. Radial
-velocities outside the range $[-30, 50]~\mathrm{km\,s^{-1}}$ are excluded, as well as
-stars with uncertainties on their RV measurement greater than 15.0. These cuts are applied
-only to the radial-velocity measurements, since proper motions carry substantially smaller
-uncertainties and are less strongly biased by unresolved binaries, which can
-significantly bias individual radial-velocity values \citep{CastroGinard2024}. Due to the limited number of stars
-with radial-velocity measurements, these ranges are set deliberately wide in order to retain
-as many data points as possible, excluding only the most obvious outliers that are clearly
-inconsistent with membership in Taurus. Stars with $\mathrm{RUWE} > 1.4$ are additionally
-excluded from the radial-velocity likelihood, as elevated RUWE values are indicative of
-unresolved binary systems or a poor astrometric solution that may bias the velocity
-measurement \citep{Lindegren2021}. Here too, a fixed value was chosen rather than a
-position-dependent RUWE threshold derived from the Gaia Unlimited binary selection
-function \citep{gaiaunlimited}, in order to include as many radial velocities as possible.
-Retaining a larger number of measurements avoids overfitting from an insufficient amount
-of data and provides the algorithm with more information to constrain the field, while
-genuine outliers are still smoothed out by its spatially correlated prior.
+Before constructing the field, the sample is filtered to remove unreliable measurements.
+The radial velocity data are distributed as a Gaussian curve with approximate mean and standard deviation of $16$ and $6~\mathrm{km\,s^{-1}}$ respectively.
+A $5\sigma$ cut was chosen to exclude outliers from this distribution, which leaves radial velocity values in the range $[-14, 46]~\mathrm{km\,s^{-1}}$.
+Furthermore, stars with uncertainties on their RV measurement greater than $15~\mathrm{km\,s^{-1}}$ are excluded from the likelihood as this marks the border between the bulk of measurements and the sparse tail of poorly constrained values.
+Stars with $\mathrm{RUWE} > 2.5$ are additionally excluded, as elevated RUWE values are indicative of unresolved binary systems or a poor astrometric solution that may bias the velocity measurement \citep{Lindegren2021,Pearce2022RUWE}.
+This value was chosen according to \citet{Fitton2022}, who argue for a more conservative binary threshold to account for the presence of disk material near young stars that could influence the single-star solution.
+These cuts are applied only to the radial-velocity measurements, since proper motions carry substantially smaller uncertainties and are less strongly biased by unresolved binaries, which can significantly affect individual radial-velocity values \citep{CastroGinard2024}.
+Due to the limited number of stars with radial-velocity measurements, these cuts are set deliberately lenient in order to retain as many data points as possible, excluding only the most severe outliers.
 
-The reconstruction volume is chosen to enclose the resulting catalog, spanning roughly
+
+The reconstruction volume is chosen to enclose the resulting catalog, spanning
 $120 \times 75 \times 75~\mathrm{pc}$ around Taurus and discretized on a grid with a cell
 size of $3~\mathrm{pc}$ per dimension (Section~\ref{sec:nifty}). The data entering the
-inference contain all 557 proper motion measurements and the XXXX radial velocity values
+inference contain all 557 proper motion measurements and 123 radial velocity values
 left after the quality cuts.
+A three-dimensional representation of the stellar data with stars indicated, of which the radial velocity data was used in the inference, is shown in Figure~\ref{fig:dataset_positions}.
+The purpose of this visualisation is to illustrate the small number of usable rv data which after the quality cuts decreased from the previous one third of the whole catalog to less than a quarter.
+Vector-based illustrations of the three-dimensional velocities are provided in Appendix~\ref{app:vectorplots}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/rv_used.png}
     \caption{Three-dimensional heliocentric Galactic Cartesian positions of the 557
         catalog stars. Stars for which a radial-velocity measurement was used in the analysis
-        (XXXX stars) are highlighted in a different color from the remaining
-        proper-motion-only members. Vector-based illustrations of the
-        three-dimensional velocities are provided in
-        Appendix~\ref{app:vectorplots}.}
+        (123 stars) are highlighted in a different color from the remaining
+        proper-motion-only members.}
     \label{fig:dataset_positions}
 \end{figure}

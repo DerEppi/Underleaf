@@ -1,15 +1,12 @@
 \chapter{Appendix}
 
-\section{Age Histogram}
+\section{Age-Velocity Comparison}
 \label{app:age_hist}
-
-Figure~\ref{fig:app_age_hist} shows an age distribution of 522 stars in the
-catalog with an existing age value.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.6\linewidth]{figures/age_hist.pdf}
-    \caption{}
+    \caption{Age histogram of 522 stellar sources with available age data.}
     \label{fig:app_age_hist}
 \end{figure}
 
@@ -20,29 +17,83 @@ catalog with an existing age value.
 Figure~\ref{fig:app_uvw_vectors} shows the full three-dimensional velocity vectors
 $(U, V, W)$ of the subsample of 180 stars for which a radial-velocity measurement is
 available, plotted at their respective three-dimensional positions within the
-reconstruction volume. Figure~\ref{fig:app_pm_vectors} instead shows the tangential
-proper-motion vectors of the full 557-star catalog, projected onto the plane of the sky
-as seen from the Sun; since these are angular rather than physical velocities, no
-distance information is encoded in this second plot.
+reconstruction volume. Figure~\ref{fig:app_pm_vectors} shows the tangential velocities of the full
+557-star catalog, drawn as three-dimensional vectors to enable comparison with the full velocity
+vectors and the velocity field, even though they are only a projection onto the plane of the sky.
+The sky plane mostly follows the $Y$--$Z$ plane, as the Sun lies
+at the origin and Taurus covers only a small patch of sky in the $-X$ direction, so the plotted
+vectors barely extend in $X$.
 
 \begin{figure}[h!]
     \centering
     \begin{subfigure}[b]{0.9\linewidth}
         \centering
         \includegraphics[width=\linewidth]{figures/UVW.png}
-        \caption{Full three-dimensional velocity vectors of the radial-velocity
-            subsample, shown at their three-dimensional positions.}
+        \caption{Full three-dimensional velocity vectors of the complete radial-velocity
+            subsample (n=180), shown at their three-dimensional positions. Colorbar clamped at
+            $50~\mathrm{km\,s^{-1}}$ to account for outliers.}
         \label{fig:app_uvw_vectors}
     \end{subfigure}
     \vspace{1em}
     \begin{subfigure}[b]{0.9\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/test.png}
-        \caption{Proper-motion vectors of the full catalog, projected onto the sky.}
+        \includegraphics[width=\linewidth]{figures/pm_vectors.png}
+        \caption{Proper-motion vectors of the full catalog.}
         \label{fig:app_pm_vectors}
     \end{subfigure}
     \caption{Vector-based illustrations of the two velocity data modalities entering the
         reconstruction: full three-dimensional space velocities of the radial-velocity
-        subsample (top) versus sky-projected proper motions of the full sample (bottom).}
+        subsample (top) versus proper motions of the full sample, represented as three-dimensional
+        vectors (bottom).}
     \label{fig:app_vectors}
+\end{figure}
+
+
+\section{Density Mask}
+\label{app:mass_density}
+
+Figure~\ref{fig:app_mass_density} shows the stellar mass density underlying the density mask: a
+Gaussian kernel density estimate of the stellar positions, weighted by the individual stellar masses
+and computed with \texttt{scipy.stats.gaussian\_kde} \citep{Virtanen2020} on the reconstruction grid, scaled by the total
+mass of the sample to give $\mathrm{M_\odot\,pc^{-3}}$. Masking at e.g.
+$10^{-3}\,\mathrm{M_\odot\,pc^{-3}}$ restricts every figure of the reconstruction to the regions
+populated by data, leaving 1611 of the 25000 grid cells.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/mass_density_dark.png}
+    \caption{Mass density of the stellar dataset. Brighter regions are denser.}
+    \label{fig:app_mass_density}
+\end{figure}
+
+
+\section{Field Derivatives}
+\label{app:derivatives}
+
+Figure~\ref{fig:app_derivatives} shows the two derived quantities discussed in
+Section~\ref{sec:Derivatives}, both in units of $\mathrm{km\,s^{-1}\,pc^{-1}}$ and restricted to
+the masked region. The divergence is signed and drawn on a diverging color scale centered on zero,
+so red and blue mark regions of expansion and convergence. For the vorticity only the magnitude
+$|\nabla\times\vec{v}|$ is shown, since its direction carries no information that is well
+constrained at this resolution.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.9\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/test.png}
+        \caption{Divergence $\nabla\cdot\vec{v}$ of the reconstructed field. Positive values
+            indicate expansion, negative values convergence.}
+        \label{fig:app_divergence}
+    \end{subfigure}
+    \vspace{1em}
+    \begin{subfigure}[b]{0.9\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/test.png}
+        \caption{Magnitude of the vorticity $|\nabla\times\vec{v}|$ of the reconstructed field.}
+        \label{fig:app_curl}
+    \end{subfigure}
+    \caption{Spatial derivatives of the reconstructed velocity field, computed by central
+        differences on the grid: divergence (top) and vorticity magnitude (bottom).}
+    \label{fig:app_derivatives}
 \end{figure}

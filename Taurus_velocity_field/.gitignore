@@ -8,5 +8,4 @@ main.*
 !main.pdf
 !main.tex
 
-!figures/*.pdf
-!!literature/*.pdf
+!figures/*.pdfs
