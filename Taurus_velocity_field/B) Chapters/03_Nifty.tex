@@ -16,7 +16,7 @@ theory (IFT) is a Bayesian framework designed specifically for this kind of prob
 set of parameters, such as the coefficients of a simple analytic function, IFT treats it
 as the object to be inferred directly. The field, denoted $s$, can take on any value at any
 point in space and can therefore be seen as an infinite-dimensional random variable. Its
-shape is constrained purely by the data $d$ and by a set of prior assumptions.
+shape is constrained purely by the data $d$ and a set of prior assumptions.
 
 Formally, the quantity of interest is the posterior probability $\mathcal{P}(s\mid d)$ of
 the field given the data. Bayes' theorem relates this posterior to the likelihood
@@ -30,10 +30,9 @@ field before any data are taken into account:
 The evidence $\mathcal{P}(d)$ acts purely as a normalization constant and does not depend on
 the field $s$. For the inference of $s$ it is therefore irrelevant and, as is common in many
 Bayesian approaches, never has to be evaluated explicitly; only the shape of the posterior as
-a function of $s$ matters. The posterior assigns a probability to every possible field configuration,
-not only to the most probable one.
-How far the field can be varied from the optimum before it becomes implausible
-is what defines the uncertainty of the reconstruction \citep{Ensslin2023_ITIFT,Ensslin2025}.
+a function of $s$ matters. Rather than a single field, the posterior gives a probability for every field that could have
+produced the data, and its scatter is the uncertainty of the reconstruction
+\citep{Ensslin2023_ITIFT,Ensslin2025}.
 
 In practice, the posterior in Eq.~(\ref{eq:bayes}) cannot be written down or
 sampled from exactly, because the number of unknowns, the field value at every point,
@@ -84,7 +83,9 @@ representation the deviation is generated as
 \end{equation}
 where the $\xi(\mathbf{k})$ are independent random numbers drawn from a standard normal
 distribution, one for each mode. They carry no structure themselves; it is the power spectrum
-$P(k)$ that assigns each mode its typical amplitude on the spatial scale $k^{-1}$.
+$P(k)$ that assigns each mode its typical amplitude on the spatial scale $k^{-1}$. The inverse
+Fourier transform $\mathrm{FT}^{-1}$ then adds the weighted modes back together into a field in
+real space.
 The inference only has to find the $\xi$ that reproduce the
 data instead of a correlated value in every grid cell. $P(k)$ itself is not fixed by hand: its
 amplitude and slope are inferred from the data, so that the balance between small-scale and
@@ -112,7 +113,7 @@ Its usage is discussed in Chapter~\ref{sec:Results}, where its effects on the re
 
 Given this likelihood and the correlated-field priors, the posterior distribution over the
 velocity field is then approximated using \texttt{NIFTy}'s variational inference scheme,
-geometric variational inference (geoVI), which builds on the earlier metric Gaussian variational
+geometric variational inference (geoVI), and metric Gaussian variational
 inference (MGVI) \citep{Knollmueller2020,Frank2021}. Both approximate the posterior by a simpler
 distribution $\mathcal{Q}(s)$, fit by minimizing the Kullback--Leibler divergence
 \begin{equation}
@@ -138,8 +139,8 @@ velocity field of Taurus together with an estimate of its reliability
 \section{Dataset}
 \label{sec:dataset}
 
-The analysis is based on a catalog of 557 stars associated with the Taurus molecular
-cloud, identified with the \texttt{SigMA} clustering algorithm of
+The analysis is based on a catalog of 557 stars associated with the TMC,
+identified with the \texttt{SigMA} clustering algorithm of
 \citet{Ratzenboeck2023a_SigMA} applied to Gaia~DR3 astrometry \citep{GaiaCollaboration2023}.
 The same membership catalog underlies the analysis of \citet{Alves2026}.
 Members that also appear in the census of \citet{Luhman2023} are flagged as such.
@@ -155,8 +156,8 @@ for only 180 of them, representing roughly one third of the sample
 (Figure~\ref{fig:dataset_positions}). Photometric data are provided in the form of the
 Gaia $G$-band magnitude and the colors $G-G_\mathrm{RP}$ and $G_\mathrm{BP}-G_\mathrm{RP}$.
 Stellar ages, visual extinctions $A_V$, and masses are included for a subset of the
-sample. They are obtained with the \texttt{Chronos} algorithm
-\citep{Ratzenboeck2023b_Chronos}, which fits theoretical isochrones to the Gaia
+sample. They are obtained with the \texttt{Chronos} algorithm~\citep{Ratzenboeck2023b_Chronos},
+which fits theoretical isochrones to the Gaia
 color--magnitude diagram of each cluster while solving for extinction simultaneously,
 so that every member of a cluster is assigned the same age.
 
@@ -258,9 +259,7 @@ These cuts are applied only to the radial-velocity measurements, since proper mo
 Due to the limited number of stars with radial-velocity measurements, these cuts are set deliberately lenient in order to retain as many data points as possible, excluding only the most severe outliers.
 
 
-The reconstruction volume is chosen to enclose the resulting catalog, spanning
-$126 \times 69 \times 81~\mathrm{pc}$ around Taurus and discretized on a grid with a cell
-size of $3~\mathrm{pc}$ per dimension (Section~\ref{sec:nifty}). The data entering the
+The data entering the
 inference contain all 557 proper motion measurements and 123 radial velocity values
 left after the quality cuts.
 Figure~\ref{fig:dataset_positions} shows a three-dimensional representation of the stellar data, with
@@ -274,7 +273,6 @@ Vector-based illustrations of the three-dimensional velocities are provided in A
     \includegraphics[width=0.8\linewidth]{figures/rv_used.png}
     \caption{Three-dimensional heliocentric Galactic Cartesian positions of the 557
         catalog stars. Stars for which a radial-velocity measurement was used in the analysis
-        (123 stars) are highlighted in a different color from the remaining
-        proper-motion-only members.}
+        (123 stars) are highlighted in green.}
     \label{fig:dataset_positions}
 \end{figure}

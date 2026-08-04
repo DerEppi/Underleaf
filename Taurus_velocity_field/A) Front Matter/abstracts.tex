@@ -9,10 +9,8 @@ proper motions are measured for essentially all of them. This thesis therefore r
 continuous three-dimensional velocity field of the complex from the full stellar sample, using
 information field theory as implemented in \texttt{NIFTy}. Each velocity component is modeled as a
 correlated field on a grid of $3~\mathrm{pc}$ cells spanning $126 \times 69 \times 81~\mathrm{pc}$,
-with a power spectrum inferred from the data. The stars enter the
-likelihood through their observables, so that a star without a radial velocity still constrains the
-field within the plane of the sky while its missing component is supplied by the spatial correlation
-with its neighbors. The input catalog consists of 557 members identified with \texttt{SigMA} in
+with a power spectrum inferred from the data. A star without a radial velocity still constrains the field within the plane
+of the sky, while its missing component is supplied by the spatial correlation with its neighbors. The input catalog consists of 557 members identified with \texttt{SigMA} in
 Gaia~DR3 astrometry, of which 123 contribute a radial velocity after quality cuts.
 
 The reconstruction reproduces the bulk motion of the complex, resolves velocity differences between
@@ -24,6 +22,5 @@ uncertainty within a single run stays far below that. A comparison of several su
 used to separate features demanded by the data from artifacts of a particular reconstruction. The
 residuals between the stars and the field expose the central limitation of the model: the peculiar
 motion of a star has nowhere to go but into the field itself. Granting the stars a common intrinsic
-velocity dispersion, inferred alongside the field, brings the weighted residuals of the proper
-motions from several standard deviations down to below one, although it does not bring the field
-closer to the data.
+velocity dispersion, inferred alongside the field, improves quality statistics like residuals,
+but does so by widening the uncertainties rather than by improving the field.

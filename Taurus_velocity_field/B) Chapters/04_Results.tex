@@ -103,7 +103,7 @@ The comparison is, however, tied to the selection of reference frame. Subtractin
 Section~\ref{sec:Taurus_ref}, changes both the magnitude and the direction of every velocity vector, and the
 ordering of magnitudes is not necessarily preserved under such a shift.
 
-A 3D viewer, built for the analysis of the resulting vector field and the stellar data, is available at \href{https://dereppi.github.io/Viewer/}{vectorfield~viewer}.
+A 3D viewer, built for the analysis of the resulting vector field and the stellar data, is available at \href{https://dereppi.github.io/Viewer/}{vectorfield~viewer}.\footnote{\url{https://dereppi.github.io/Viewer/}}
 Most plots shown here result from this application.
 
 \subsection{Taurus Reference Frame}
@@ -120,7 +120,7 @@ $W$, but between runs the values scatter by several $\mathrm{km\,s^{-1}}$ in eve
 is therefore not a reliable measurement of the motion of Taurus, and the internal frame defined by it
 inherits that limitation. For comparison, \citet{Galli2019} derive $(-16.2, -12.8, -8.9)~\mathrm{km\,s^{-1}}$,
 or $22.5~\mathrm{km\,s^{-1}}$ in magnitude, from 92 members with radial velocities. The same values enter
-the reconstruction as the prior mean of the velocity offset of each component, so the agreement is not an
+the reconstruction as the prior mean of the velocity offset, so the agreement is not an
 independent confirmation. The prior is broad enough, with a width of the order of $10~\mathrm{km\,s^{-1}}$,
 to let the data move the offset away from it, but part of the recovered mean still reflects that choice.
 Figure~\ref{fig:vfield_taurus} shows the velocity field in the discussed reference frame.
@@ -220,17 +220,15 @@ The median fit lies 4.71 and 6.83 standard deviations away from the actual value
 radial velocity fit lies within almost exactly one $\sigma$.
 The fit is poor by this measure, but the reason is straightforward.
 The effective uncertainty of the stars in this model consists purely of the measurement errors.
-For the proper motions, the median error is $0.06~\mathrm{mas\,yr^{-1}}$ for $\mu_{\alpha*}$ and
-$0.04~\mathrm{mas\,yr^{-1}}$ for $\mu_{\delta}$, with median measurements for $\mu_{\alpha*}$ and
-$\mu_{\delta}$ of about $7$ and $-21~\mathrm{mas\,yr^{-1}}$ respectively.
+The median error is $0.06~\mathrm{mas\,yr^{-1}}$ for $\mu_{\alpha*}$ and
+$0.04~\mathrm{mas\,yr^{-1}}$ for $\mu_{\delta}$, with median measurements of about $7$ and $-21~\mathrm{mas\,yr^{-1}}$ respectively.
 So the algorithm tries to accurately fit data with an uncertainty of about one percent of the
 measurement or less.
 The stars, however, do not move as a continuous field; they possess peculiar motions of their own.
 \citet{Galli2019} determined the three-dimensional velocity dispersion inside Taurus to be
 $\sigma = 2.7~\mathrm{km\,s^{-1}}$ and describe the internal motions in the radial direction of the
 complex as ``dominated by random motions rather than an organized expansion or contraction
-pattern''.
-This suggests a change to the model that accounts for these peculiar velocities.
+pattern''. This suggests a change to the model that accounts for these peculiar velocities.
 
 
 \subsection{Comparison}
