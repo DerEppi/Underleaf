@@ -1,6 +1,6 @@
 \chapter{Appendix}
 
-\section{Age-Velocity Comparison}
+\section{Age Histogram}
 \label{app:age_hist}
 
 \begin{figure}[h!]
@@ -30,8 +30,8 @@ vectors barely extend in $X$.
         \centering
         \includegraphics[width=\linewidth]{figures/UVW.png}
         \caption{Full three-dimensional velocity vectors of the complete radial-velocity
-            subsample (n=180), shown at their three-dimensional positions. Colorbar clamped at
-            $50~\mathrm{km\,s^{-1}}$ to account for outliers.}
+        subsample (n=180), shown at their three-dimensional positions. Colorbar clamped at
+        $50~\mathrm{km\,s^{-1}}$ to account for outliers.}
         \label{fig:app_uvw_vectors}
     \end{subfigure}
     \vspace{1em}
@@ -55,13 +55,13 @@ vectors barely extend in $X$.
 Figure~\ref{fig:app_mass_density} shows the stellar mass density underlying the density mask: a
 Gaussian kernel density estimate of the stellar positions, weighted by the individual stellar masses
 and computed with \texttt{scipy.stats.gaussian\_kde} \citep{Virtanen2020} on the reconstruction grid, scaled by the total
-mass of the sample to give $\mathrm{M_\odot\,pc^{-3}}$. Masking at e.g.
-$10^{-3}\,\mathrm{M_\odot\,pc^{-3}}$ restricts every figure of the reconstruction to the regions
-populated by data, leaving 1611 of the 25000 grid cells.
+mass of the sample to give $\mathrm{M_\odot\,pc^{-3}}$. Masking at any value above zero
+restricts every figure of the reconstruction to the regions populated by data with variable extent
+depending on the chosen cut.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/mass_density_dark.png}
+    \includegraphics[width=0.9\linewidth]{figures/mass_density.png}
     \caption{Mass density of the stellar dataset. Brighter regions are denser.}
     \label{fig:app_mass_density}
 \end{figure}
@@ -81,7 +81,7 @@ constrained at this resolution.
     \centering
     \begin{subfigure}[b]{0.9\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/test.png}
+        \includegraphics[width=\linewidth]{figures/vfield_div.png}
         \caption{Divergence $\nabla\cdot\vec{v}$ of the reconstructed field. Positive values
             indicate expansion, negative values convergence.}
         \label{fig:app_divergence}
@@ -89,7 +89,7 @@ constrained at this resolution.
     \vspace{1em}
     \begin{subfigure}[b]{0.9\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/test.png}
+        \includegraphics[width=\linewidth]{figures/vfield_curl.png}
         \caption{Magnitude of the vorticity $|\nabla\times\vec{v}|$ of the reconstructed field.}
         \label{fig:app_curl}
     \end{subfigure}

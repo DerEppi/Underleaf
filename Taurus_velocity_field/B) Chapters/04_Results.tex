@@ -16,13 +16,9 @@ rather as a work in progress and the most promising result acquired at this poin
 not overly beneficial to analyze the field in detail; it is instead discussed and reviewed qualitatively.
 Section~\ref{sec:Comparison} discusses different runs of the algorithm with different parameters or different quality
 cuts, and even runs with the same parameters where the posterior yielded different results. Features that
-appear consistently across these runs can be read as actual data driven properties rather than artefacts resulting by the choice of run.
+appear consistently across these runs can be read as actual data driven properties rather than artefacts resulting from the choice of run.
 
-Beyond the data cuts, the model itself was revised several times over the course of this thesis.
-These changes grew out of a long series of unsuccessful iterations, each of which sharpened the
-requirements on a faithful reconstruction of the Taurus velocity field.
-
-Apart from the data cuts, the model itself changed a few times over the course of this thesis.
+Apart from the data cuts, the model itself was revised several times over the course of this thesis.
 Most of these changes came out of a series of unsuccessful iterations, each giving further
 insight into the appropriate choice of model and parameters.
 
@@ -49,9 +45,9 @@ every grid cell, with a mass-density mask hiding the regions that are not covere
 (Section~\ref{app:mass_density}). There the reconstruction is no longer constrained by the
 likelihood and merely extrapolates the prior. The same mask is applied to every subsequent figure.
 The general direction of the bulk motion in Figure~\ref{fig:app_uvw_vectors} remains, but with
-smaller dispersion and peaks than in the data as \texttt{NIFTy} smoothes the field and filters outliers.
-The main complex of Taurus appears to move into
-the same direction while different parts of the cloud move at different velocities revealing several subpopulations.
+smaller magnitudes than in the data as \texttt{NIFTy} smooths the field and filters outliers.
+The main complex of Taurus appears to move in
+the same direction while different parts of the cloud move at different velocities revealing subpopulations.
 
 \begin{figure}[h!]
     \centering
@@ -61,51 +57,73 @@ the same direction while different parts of the cloud move at different velociti
     \label{fig:vfield_gaia}
 \end{figure}
 
+Several small-scale peaks stand out against the otherwise smooth field. They appear throughout the region,
+also where stars are plentiful, since the roughly 550 members are still outnumbered by the grid cells they
+have to constrain: a star whose velocity deviates from its neighbors drives a local peak rather than being
+averaged down. Whether such a feature traces a real motion or a single deviant measurement is decided by its
+reappearance across runs, which is examined in Section~\ref{sec:Comparison}.
+
+The peaks also stretch the colorbar, masking the smaller
+differences across the rest of the region into a narrow band of color. Figure~\ref{fig:vfield_gaia_cut}
+therefore repeats the field with the colorbar clamped to $21$--$28~\mathrm{km\,s^{-1}}$, where the cells
+outside this range are drawn in the limiting colors. The limits sit
+roughly symmetrically around the bulk of the distribution, so that only the peaks are clipped.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/vfield_gaia_cut.png}
+    \caption{The velocity field of Figure~\ref{fig:vfield_gaia} with the colorbar clamped to
+    $21$--$28~\mathrm{km\,s^{-1}}$, showing the variation between the subpopulations that the
+    small-scale peaks would otherwise hide.}
+    \label{fig:vfield_gaia_cut}
+\end{figure}
+
 It should be noted that Gaia measures in the barycentric reference frame \citep{GaiaCollaboration2023}, so
 the velocities describe how Taurus moves relative to the Sun. The bulk motion of the field therefore says as
 much about the motion of the Sun as about that of Taurus, whereas the relative motions within the region are
 unaffected by this choice of frame. To gain physically relevant information about Taurus, a change of
 reference frame would be required as performed later in Section~\ref{sec:Taurus_ref}.
 
-
 Comparing the velocity magnitudes to the stellar ages in Figure~\ref{fig:age_velocity} reveals a systematic
 trend between the two quantities: the youngest stars (1--5~Myr) reach smaller velocity magnitudes than the
 older subgroups (6--15~Myr), forming an age--velocity gradient across the region. This is not an artefact of
 this particular reconstruction, as the same property appears in most other runs of the algorithm and is
-already present in the stellar data itself (Figure~\ref{fig:age_vel_comp}).
+already present in the stellar data itself (Figure~\ref{fig:age_vel_comp}). As in
+Figure~\ref{fig:vfield_gaia_cut}, the colorbar is clipped so that the small-scale peaks do not compress the
+scale of the field.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/age_velocity.png}
+    \caption{Comparison between star ages (dots) and velocity magnitudes overlaid.}
+    \label{fig:age_velocity}
+\end{figure}
 
 The comparison is, however, tied to the selection of reference frame. Subtracting a constant offset, as done in
 Section~\ref{sec:Taurus_ref}, changes both the magnitude and the direction of every velocity vector, and the
 ordering of magnitudes is not necessarily preserved under such a shift.
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.9\linewidth]{figures/age_velocity.png}
-    \caption{Comparison between star ages (dots) and velocity magnitudes (crosses).}
-    \label{fig:age_velocity}
-\end{figure}
-
-
-A 3D viewer, constructed for the analysis of the resulting vector field and the stellar data, is available at \href{https://dereppi.github.io/Viewer/}{vectorfield~viewer}.
+A 3D viewer, built for the analysis of the resulting vector field and the stellar data, is available at \href{https://dereppi.github.io/Viewer/}{vectorfield~viewer}.
+Most plots shown here result from this application.
 
 \subsection{Taurus Reference Frame}
 \label{sec:Taurus_ref}
-Choosing an appropriate reference frame is the key to extracting physical information of Taurus and to
-enabling further analysis such as the study of momentum or energy. An important reference frame to look
-at is the internal one of the cloud, subtracting the motion of the complex itself. This point of reference
-is achieved by subtracting the mean motion of the whole complex, weighted by the mass density from Section~\ref{app:mass_density}.
-The velocity of Taurus as well as the motion of the sun contribute to this value.
-The mean motion in this run evaluates to $(-7.15, -14.96, -7.01)~\mathrm{km\,s^{-1}}$ in galactic coordinates, with a bulk
-motion of $18.01~\mathrm{km\,s^{-1}}$, but this value varies greatly between runs and is therefore not an interpretable measurement of the
-motion of Taurus. Within a single run its posterior uncertainty is small, about $0.4~\mathrm{km\,s^{-1}}$ in $U$ and below
-$0.1~\mathrm{km\,s^{-1}}$ in $V$ and $W$, whereas the spread between runs reaches several $\mathrm{km\,s^{-1}}$ in every component.
-For comparison, \citet{Galli2019} determine the mean motion of the complex from 92 members with radial
-velocities as $(-16.2, -12.8, -8.9)~\mathrm{km\,s^{-1}}$.
-The $U$~component of this run deviates from their value by about $9~\mathrm{km\,s^{-1}}$, while $V$ and $W$ differ by
-roughly $2~\mathrm{km\,s^{-1}}$. This pattern is expected: $U$ points almost along the line of sight to
-Taurus and therefore consists almost entirely of the radial velocity component, of which only a fraction
-the sample has measured. As seen later in Section~\ref{sec:Validation}, this effect also is visible in the posterior
-uncertainty.
+Choosing an appropriate reference frame is essential for extracting physical information about Taurus and
+for any further analysis of momentum or energy. An important choice is the frame internal to the complex,
+in which the motion of Taurus as a whole is removed. It is obtained by subtracting the mean field velocity,
+weighted by the mass density from Section~\ref{app:mass_density}. Since the reconstruction is heliocentric,
+this mean contains the motion of Taurus itself together with relative solar motion.
+In this run it evaluates to $(-17.22, -14.48, -9.25)~\mathrm{km\,s^{-1}}$ in galactic coordinates,
+corresponding to a bulk speed of $24.32~\mathrm{km\,s^{-1}}$. Within a single run the posterior uncertainty
+of this mean is small, about $0.4~\mathrm{km\,s^{-1}}$ in $U$ and below $0.1~\mathrm{km\,s^{-1}}$ in $V$ and
+$W$, but between runs the values scatter by several $\mathrm{km\,s^{-1}}$ in every component. The mean motion
+is therefore not a reliable measurement of the motion of Taurus, and the internal frame defined by it
+inherits that limitation. For comparison, \citet{Galli2019} derive $(-16.2, -12.8, -8.9)~\mathrm{km\,s^{-1}}$,
+or $22.5~\mathrm{km\,s^{-1}}$ in magnitude, from 92 members with radial velocities. The same values enter
+the reconstruction as the prior mean of the velocity offset of each component, so the agreement is not an
+independent confirmation. The prior is broad enough, with a width of the order of $10~\mathrm{km\,s^{-1}}$,
+to let the data move the offset away from it, but part of the recovered mean still reflects that choice.
+Figure~\ref{fig:vfield_taurus} shows the velocity field in the discussed reference frame.
 
 \begin{figure}[h!]
     \centering
@@ -114,19 +132,24 @@ uncertainty.
     \label{fig:vfield_taurus}
 \end{figure}
 
-An age-velocity gradient remains, and in this reference frame it becomes clear which groups are moving faster than others.
-However, as mentioned, the mean velocity varies considerably between runs, so the internal reference frame should be interpreted with great care.
+With the common bulk motion removed, the differences between the subgroups stand out: which parts of the
+complex move faster than the region as a whole, and in which direction they depart from it.
+Since an error in the subtracted mean shifts every vector by the same amount, groups can be compared
+to each other within one run, while the absolute magnitudes and directions shown here carry the
+uncertainty of the frame itself.
 
-This reference frame also enables the analysis of internal energy distributions using the kinetic energy of the stars $E=m/2\cdot v^2$.
-Observing where high amounts of energy are stored, could reveal information about the origin of Taurus.
+This reference frame also enables the analysis of internal energy distributions using the kinetic energy of the stars $E=\tfrac{1}{2}mv^2$.
+Observing where high amounts of energy are stored could reveal information about the origin of Taurus.
 As the energy analysis depends on the correctness of this reference frame, a thorough investigation is not pursued here.
-However, the total kinetic energy of the stars inside the cloud evaluates to $3.3\cdot10^{39}\,\mathrm{J}$ in this particular run.
+However, integrating $\tfrac{1}{2}\rho\,|\vec{v}|^2$ over the reconstruction volume, with $\rho$ the
+stellar mass density of Section~\ref{app:mass_density}, gives a total kinetic energy of
+$2.8\cdot10^{39}\,\mathrm{J}$ in this particular run.
 
 
 \subsection{Derivatives}
 \label{sec:Derivatives}
 
-Two additional quantities derived from the field describe its local behaviour: the divergence $\nabla\cdot\vec{v}$,
+Two additional quantities derived from the field describe its local behavior: the divergence $\nabla\cdot\vec{v}$,
 positive where the field expands and negative where it contracts, and the vorticity $\nabla\times\vec{v}$,
 which describes local rotation and shear.
 
@@ -137,7 +160,7 @@ of the reconstruction, which are the least constrained by the data and also the 
 between runs (Section~\ref{sec:Comparison}). They are computed from the mean field rather than from the
 individual posterior samples, so no uncertainty is attached to them.
 
-The maps, shown in appendix~\ref{app:derivatives}, are therefore only read qualitatively.
+The maps, shown in Appendix~\ref{app:derivatives}, are therefore only read qualitatively.
 \citet{Galli2019} find no significant expansion or
 contraction of the complex, quoting an expansion velocity of $0.0\pm0.1~\mathrm{km\,s^{-1}}$, while they do report a
 potential global rotation of $1.5\pm0.1~\mathrm{km\,s^{-1}}$.
@@ -153,16 +176,16 @@ The posterior uncertainty of the run discussed above is shown in Figure~\ref{fig
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/test.png}
+    \includegraphics[width=0.9\linewidth]{figures/vfield_std.png}
     \caption{The posterior uncertainty represented as magnitude of all three components.}
     \label{fig:uncertainty}
 \end{figure}
 
-A key insight here is that (region mit hoher uncertainty erwähnen)
-Another finding is that the uncertainty is primarily made up of the $U$~component.
-As mentioned before, this comes from the specific property of the TMC that $U$ points almost along the line of sight and consists mostly of the radial velocity component, which has far greater measurement uncertainties than the proper motions and in turn contributes more to the variation of the posterior samples.
+A key insight here is that while the posterior is well constrained in the central regions, where most of the data lie, the edges have much higher uncertainties.
+Another finding is that the uncertainty is dominated by the $U$~component with a median uncertainty of $0.93~\mathrm{km\,s^{-1}}$ while the $V$ and $W$ components have median uncertainties of $0.46$ and $0.57~\mathrm{km\,s^{-1}}$ respectively.
+This comes from the specific property of the TMC that $U$ points almost along the line of sight and consists mostly of the radial velocity component, which has far greater measurement uncertainties than the proper motions and in turn contributes more to the variation of the posterior samples.
 
-The residuals between the data and the field values provide another check on the posterior.
+The residuals between the data and the field values provide another quality check on the posterior.
 Stars carry peculiar motions that a continuous field cannot represent, and fitting every star
 exactly is neither possible at this resolution nor desirable, so these residuals are expected to
 be nonzero. Since the plain differences between stellar and field values carry only limited
@@ -191,15 +214,15 @@ The residual statistics are presented in Table~\ref{tab:residuals}.
     \end{tabular}
 \end{table}
 
-The most noticeable characteristic of this statistic is that the proper motions are clearly not fit
+The most noticeable feature of this statistic is that the proper motions are clearly not fit
 within their uncertainties.
-The median fit lies 4.7 and 6.8 standard deviations away from the actual value, while the median
+The median fit lies 4.71 and 6.83 standard deviations away from the actual value, while the median
 radial velocity fit lies within almost exactly one $\sigma$.
-This is a terrible fit, but the reason is quite simple.
+The fit is poor by this measure, but the reason is straightforward.
 The effective uncertainty of the stars in this model consists purely of the measurement errors.
 For the proper motions, the median error is $0.06~\mathrm{mas\,yr^{-1}}$ for $\mu_{\alpha*}$ and
 $0.04~\mathrm{mas\,yr^{-1}}$ for $\mu_{\delta}$, with median measurements for $\mu_{\alpha*}$ and
-$\mu_{\delta}$ of $7$ and $-21~\mathrm{mas\,yr^{-1}}$ respectively.
+$\mu_{\delta}$ of about $7$ and $-21~\mathrm{mas\,yr^{-1}}$ respectively.
 So the algorithm tries to accurately fit data with an uncertainty of about one percent of the
 measurement or less.
 The stars, however, do not move as a continuous field; they possess peculiar motions of their own.
@@ -212,28 +235,86 @@ This suggests a change to the model that accounts for these peculiar velocities.
 
 \subsection{Comparison}
 \label{sec:Comparison}
+This section serves as a case study of different iterations of the algorithm, comparing runs that differ in
+their parameters, in the applied quality cuts, or merely in their results. Some of these runs show which
+features of the reconstruction survive such a change and can be read as data driven, while others expose
+the weaknesses of the model that motivate the extension discussed in Section~\ref{sec:peculiar_motions}.
+
+These runs are also available at \href{https://dereppi.github.io/Viewer/}{vectorfield~viewer} with the respective
+names of the runs mentioned here. To keep this work clear from yet another set of large three-dimensional plots,
+the reader is advised to confirm the described features in the interactive viewer, where each run can be inspected
+freely and its exact parameters are listed alongside the reconstruction.
+
+The runs were not all produced with the same code. Over the course of this thesis several errors in the
+pipeline were fixed, and the readout of the field at the stellar positions was replaced by the trilinear
+interpolation described at the beginning of this chapter. A difference between two runs can therefore
+originate from the parameters, from the quality cuts, or from the state of the pipeline they were run with.
+
+The earliest iteration considered here is \texttt{parameters\_old}. It combines loose priors, which leave
+the field free to vary strongly and on small scales, with quality cuts that discard more data than
+necessary: only 89 stars enter the fit with a radial velocity, where the later runs keep between 110 and
+160. Its noise estimation then behaves as described above: it inflates the radial-velocity errors by more
+than a factor of two, leaving the field to be shaped almost entirely by the proper motions. The result is
+the ``split'' of the field that appears in most runs with an active noise estimation, where the vectors
+diverge in opposite directions along $U$ and separate the cloud into two halves. The data show no such
+pattern. As described in Section~\ref{sec:Validation}, $U$ is the component the radial velocities
+constrain; once they are downweighted, the algorithm is free to choose its direction. A strong small-scale peak in the region of the younger stars of $\sim80~\mathrm{km\,s^{-1}}$ appears alongside it. Overall,
+this iteration yields no physical insight into the motions of Taurus. Its value lies in what followed from
+it: the noise estimation was dropped eventually, and the quality cuts were revised to keep more of the few radial
+velocities that are available.
+
+Another interesting run is \texttt{ruwe\_test}. Its more lenient quality cuts leave 112 radial velocities, and a
+steeper prior on the slope of the power spectrum should reduce the overfitting on small scales. It is the
+exception among the runs with an active noise estimation, as it does not develop the patterns described
+above. The median $\eta$ stays near 2, so the radial-velocity errors are inflated by some 40 per cent
+instead of a factor of two or more, and the measurements keep constraining the field. Accordingly, the split along
+$U$ is absent. Why the noise estimation settles at this level here and not in the other runs cannot be read
+off the run itself. The field is dominated by large-scale structure and carries few small-scale
+fluctuations, in line with the steeper slope prior. The age--velocity gradient described above nevertheless
+reappears, which supports reading it as a property of the data rather than of one particular reconstruction.
+
+A last example of these iterations, \texttt{test\_new\_param}, is the configuration the rewritten pipeline
+started from. The noise estimation is switched off, the quality cuts are the
+loosest of all runs discussed here and leave 156 radial velocities, and the prior on the fluctuations is
+tightened so that the field can no longer vary as freely as before. With the radial velocities at full weight, the split along $U$ does
+not appear. The mean motion, however, comes out at $U \approx -8~\mathrm{km\,s^{-1}}$, roughly half the
+value of \citet{Galli2019} and of the runs discussed in Section~\ref{sec:Taurus_ref}, even though the
+offset prior is centered on the literature value. A small-scale peak appears here as well, but at a
+different position than in \texttt{parameters\_old}: such features move with the run rather than marking a
+fixed location in the region. They persist because the field is still the only place where the deviation
+of an individual star can go, which is what the next section targets.
 
 \subsection{Peculiar motions}
 \label{sec:peculiar_motions}
 
 The demonstrations in Section~\ref{sec:Comparison} and the residuals above point at the same
 weakness: the model has no way of absorbing the motion a star has on top of the large-scale
-field. Every deviation has to be paid for by the field itself, and with proper-motion errors of
-about one percent of the measurement, even a small peculiar velocity turns into a residual of
-several $\sigma$.
+field. Every deviation has to be paid for by the field itself, so that even a small peculiar velocity turns
+into a residual of several $\sigma$.
 
-The common remedy for this is an intrinsic scatter term \citep{Hogg2010}: a single parameter
-$\sigma_\mathrm{int}$ that describes how widely the stars scatter around the underlying model and
-enters the likelihood in quadrature with the reported measurement uncertainties. Treating the
-peculiar velocity of a star as an isotropic Gaussian of width $\sigma_\mathrm{int}$ and
-marginalizing over it yields exactly that, with the same width in every component. For the radial
-velocities the effective uncertainty is therefore
+A simple approach for this is an intrinsic scatter term \citep[Sect.~8]{Hogg2010}. It starts from
+the observation that the offset of a star from a smooth field has two independent causes: the
+measurement error reported by Gaia, and the peculiar velocity the star has on top of the
+large-scale flow. The first is known for every star, the second is not. Fitting a peculiar velocity
+for each star separately would add hundreds of free parameters that the data cannot constrain, much
+like the $\eta$ noise estimation discussed above. What can be captured by a single number, however,
+is how widely the stars scatter as a population: their peculiar velocities are assumed to be drawn
+from one common Gaussian distribution of width $\sigma_\mathrm{int}$, taken to be the same in all
+directions.
+
+Since the two contributions are independent of one another, their variances add, and since both are
+Gaussian, so is their sum. A star is therefore expected to lie further from the field than its
+measurement error alone would suggest, by an amount set by $\sigma_\mathrm{int}$, and the two enter
+the likelihood added in quadrature. Apart from this new parameter, nothing else at the model changes,
+each star still contributes a single residual between its measurement and the field, only now this
+residual is judged against the widened uncertainty. For the radial velocities the effective uncertainty
+is therefore
 \begin{equation}
     \sigma_{v_r,\mathrm{eff}}^2 = \sigma_{v_r}^2 + \sigma_\mathrm{int}^2 \, ,
     \label{eq:sigma_eff_rv}
 \end{equation}
-while for the proper motions $\sigma_\mathrm{int}$ first has to be converted from
-$\mathrm{km\,s^{-1}}$ to $\mathrm{mas\,yr^{-1}}$ at the distance $d$ of the respective star,
+with $\sigma_\mathrm{int}$ in $\mathrm{km\,s^{-1}}$. For the proper motions $\sigma_\mathrm{int}$ first
+has to be converted to $\mathrm{mas\,yr^{-1}}$ at the distance $d$ of the respective star,
 \begin{equation}
     \sigma_{\mu,\mathrm{eff}}^2 = \sigma_{\mu}^2
     + \left( \frac{\sigma_\mathrm{int}}{\kappa\,d} \right)^{2} \, ,
@@ -244,9 +325,68 @@ with $d$ in kpc. The field is then no longer required to pass through every star
 reproduce the stellar velocities to within the width of their own velocity distribution, and the
 weighted residuals of Section~\ref{sec:Validation} become a meaningful measure of the fit again.
 
-The scale of the parameter is set by the region itself. The dispersion of
-$2.7~\mathrm{km\,s^{-1}}$ reported by \citet{Galli2019} is a three-dimensional value and includes
-the relative motions between the individual clouds, which the reconstructed field represents on
-its own. What is left for $\sigma_\mathrm{int}$ is the scatter below the resolution of the grid,
-so this value is an upper limit rather than a value to adopt. It was therefore chosen such that
-the weighted proper-motion residuals approach unity.
+The scale of the parameter is set by the region itself, but the $2.7~\mathrm{km\,s^{-1}}$ of
+\citet{Galli2019} cannot be adopted directly: the value is three-dimensional and measures the
+scatter of all Taurus members around a single mean velocity. Most of it is large-scale --- the
+clouds move relative to each other by $1$ to $5~\mathrm{km\,s^{-1}}$, and these coherent motions
+are what the reconstructed field describes on its own. $\sigma_\mathrm{int}$ only has to cover what
+the field cannot follow, the deviation of a star from its immediate surroundings on scales below
+the $3~\mathrm{pc}$ of a grid cell, so the complex-wide value is an upper limit. Within the
+individual clouds \citet{Galli2019} report dispersions of $0.2$ to $1.6~\mathrm{km\,s^{-1}}$ per
+component, which still contain the measurement errors.
+
+The run \texttt{test\_with\_sigma} applies this to the setup of the default run, with a log-normal prior on
+$\sigma_\mathrm{int}$ of mean $0.8~\mathrm{km\,s^{-1}}$, well inside the range argued for above. The
+posterior settles at $0.99~\mathrm{km\,s^{-1}}$, so the data ask for slightly more scatter than the prior
+suggests. Table~\ref{tab:residuals_sigma} compares the weighted residuals with those of the default run.
+The absolute differences barely move, so the reconstruction is largely the same, but the median weighted
+residuals of the proper motions fall from $4.71$ and $6.83$ to $0.34$ and $0.45$, and the extreme cases
+from several hundred $\sigma_\mathrm{eff}$ to below ten. Both medians now lie below the $0.67$ expected
+for correctly scaled uncertainties, while the radial velocities stay at $0.91$: one common width cannot
+serve both at once.
+
+\begin{table}[h!]
+    \centering
+    \caption{Weighted residuals of the default run and of \texttt{test\_with\_sigma}, in units of the
+    effective uncertainty $\sigma_\mathrm{eff}$ of the respective star. For \texttt{test\_with\_sigma}
+    this uncertainty includes the inferred intrinsic dispersion of $0.99~\mathrm{km\,s^{-1}}$, added in
+    quadrature to the measurement error following Equations~\ref{eq:sigma_eff_rv}
+    and~\ref{eq:sigma_eff_pm}. $N$ is the same for both runs: 557 stars for the proper motions and 123
+    for the radial velocities.}
+    \label{tab:residuals_sigma}
+    \begin{tabular}{l r r r r r r}
+        \toprule
+                        & \multicolumn{3}{c}{Default run} & \multicolumn{3}{c}{\texttt{test\_with\_sigma}}                                 \\
+        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+        Component       & Mean                            & Median                                         & Max    & Mean & Median & Max  \\
+        \midrule
+        $\mu_{\alpha*}$ & 10.29                           & 4.71                                           & 240.48 & 0.57 & 0.34   & 5.31 \\
+        $\mu_{\delta}$  & 16.31                           & 6.83                                           & 330.28 & 0.70 & 0.45   & 8.18 \\
+        $v_r$           & 1.59                            & 0.98                                           & 31.99  & 1.25 & 0.91   & 7.08 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Visually, the run again produces a field dominated by large scales, with no outstanding small-scale
+fluctuations. This is what the model is meant to do, as it infers the smooth field underlying the stellar
+motions rather than the motions themselves. One pattern stands out: large velocities in the $U$ component
+on the far side of Taurus, where hardly any star with a measured radial velocity is left. Since $U$ is the
+component the radial velocities constrain, the field is extrapolated there rather than measured, which
+makes this an edge effect rather than a property of the region. Continuing the inference for further
+iterations may also resolve it.
+
+This run remains a test. The appropriate value of $\sigma_\mathrm{int}$, and whether inferring it alongside
+the field is the right choice at all, would need further investigation; the prior used here was settled on
+in a few earlier iterations by comparing the resulting fits. It should also be kept in mind that widening
+the uncertainties improves the fit statistic without necessarily bringing the field closer to the data: the absolute
+differences are, if anything, slightly larger than before, and only the standard they are measured against
+has changed. Since
+$\sigma_\mathrm{int}$ and the amplitude of the field are constrained by the same data, the inference can
+trade one against the other, so the recovered $0.99~\mathrm{km\,s^{-1}}$ should not be read as a
+measurement of the peculiar velocity dispersion in Taurus.
+
+The most severe limitation, however, remains the data itself: Taurus holds few stars and even fewer with a
+reliable radial velocity. Compared with pre-Gaia times the sample is immensely better in
+both size and precision, but a reconstruction of this kind would profit from a revision once
+Gaia~DR4 \citep{GaiaDR4}
+provides a larger and better characterised set of radial velocities.

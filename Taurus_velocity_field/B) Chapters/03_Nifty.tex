@@ -5,13 +5,9 @@
 \section{Information Field Theory}
 \label{sec:ift}
 
-Only a fraction of the stars in our catalog have measured radial velocities, while proper
-motions, and thus two of the three velocity components, are available for essentially the
-full sample. Rather than analyzing individual stars or predefined subgroups separately,
-this thesis combines all of this information into a continuous, three-dimensional
-velocity field that describes the motion of Taurus, thereby making use of the full stellar
-sample rather than only the subset of members for which all three velocity components are
-available.
+Rather than analyzing individual stars or predefined subgroups separately, this thesis combines
+the incomplete velocity information of the whole catalog into one continuous, three-dimensional
+velocity field that describes the motion of Taurus.
 
 This is a common problem in physics: a continuous physical quantity, here a velocity
 field, must be reconstructed from a finite, noisy set of measurements. Information field
@@ -34,7 +30,7 @@ field before any data are taken into account:
 The evidence $\mathcal{P}(d)$ acts purely as a normalization constant and does not depend on
 the field $s$. For the inference of $s$ it is therefore irrelevant and, as is common in many
 Bayesian approaches, never has to be evaluated explicitly; only the shape of the posterior as
-a function of $s$ matters. The posterior assigns a probability to every possible field configuration
+a function of $s$ matters. The posterior assigns a probability to every possible field configuration,
 not only to the most probable one.
 How far the field can be varied from the optimum before it becomes implausible
 is what defines the uncertainty of the reconstruction \citep{Ensslin2023_ITIFT,Ensslin2025}.
@@ -58,8 +54,7 @@ algorithms needed to approximate the posterior described before.
 An important prior assumption of this model is that the velocity field is spatially
 correlated: nearby points are expected to have similar velocities, while the field can vary
 more or less smoothly depending on the physical scale considered. This kind of spatially
-correlated field, with a power spectrum that is not fixed by hand but learned from the data,
-follows and adapts the approach of \citet{Hutschenreuter2026}, who used the same underlying
+correlated field follows and adapts the approach of \citet{Hutschenreuter2026}, who used the same underlying
 model and code to reconstruct the three-dimensional velocity field of the Sco-Cen OB
 association. Given the modest size of the Taurus sample of a few hundred stars, compared to
 over ten thousand for Sco-Cen, the model is kept
@@ -67,8 +62,8 @@ deliberately simple with each velocity component being described by a single cor
 without attempting to separate the region into several kinematically distinct populations, as
 was done for Sco-Cen, since the data would not reliably constrain such a model.
 
-The three-dimensional velocity field is modeled on a regular grid of $3~\mathrm{pc}$ cells
-spanning a volume of $120 \times 75 \times 75~\mathrm{pc}$ around Taurus.
+The three-dimensional velocity field is modeled on a regular grid of $42 \times 23 \times 27$
+cells of $3~\mathrm{pc}$, spanning a volume of $126 \times 69 \times 81~\mathrm{pc}$ around Taurus.
 Representing the field on this grid makes the inference computationally manageable, replacing an infinite
 number of parameters with a finite, though still large, set of values. Each
 velocity component is represented as a \texttt{NIFTy} correlated field, separated
@@ -96,23 +91,24 @@ amplitude and slope are inferred from the data, so that the balance between smal
 large-scale structure is set by the observations rather than assumed a priori.
 
 In the likelihood, the data enter as observables rather than as space velocities: for each
-star the field is evaluated at its position through interpolation (Further discussed in Section~\ref{sec:Results}) and projected onto the two proper-motion components
+star the field is evaluated at its position through interpolation (further discussed in
+Chapter~\ref{sec:Results}) and projected onto the two proper-motion components
 on the sky and, where available, the radial
 velocity along the line of sight, with additive Gaussian measurement noise.
 A star without a
 radial velocity therefore constrains the field only within the plane of the sky, but since the
-prior correlates neighbouring positions, its missing component is supplied by the stars around
+prior correlates neighboring positions, its missing component is supplied by the stars around
 it. This is what allows the full sample to be used instead of only the part of it with
 complete velocities.
 
-Because the nominal
+The nominal
 Gaia uncertainties do not necessarily capture the full observational error, for example
 because unmodeled stellar peculiar motions or unresolved binary systems add scatter beyond the
-reported values, the noise level of the radial velocities is not fixed to the reported values
-but is rescaled by an $\eta$ parameter per star that is estimated from the data.
+reported values. The model can therefore rescale the noise level of the
+radial velocities by an $\eta$ parameter per star that is estimated from the data.
 This data-driven noise estimation is applied only to the radial-velocity measurements.
 The proper motions are kept at their reported Gaia uncertainties.
-A further intrinsic-scatter parameter that would also account for the stars' peculiar velocities in the proper motions was not included in the model used here, but its effects are examined in the Discussion (Section~\ref{sec:Discussion}).
+Its usage is discussed in Chapter~\ref{sec:Results}, where its effects on the reconstruction are examined.
 
 Given this likelihood and the correlated-field priors, the posterior distribution over the
 velocity field is then approximated using \texttt{NIFTy}'s variational inference scheme,
@@ -138,7 +134,7 @@ velocity field, from which both a mean velocity map and a corresponding uncertai
 velocity field of Taurus together with an estimate of its reliability
 \citep{Knollmueller2020,Frank2021}.
 
-% ------------------------------------
+% -----------------------------------------------------
 \section{Dataset}
 \label{sec:dataset}
 
@@ -173,9 +169,10 @@ Before any field reconstruction, several properties of the data can already be a
 directly. Figure~\ref{fig:dataset_xz_age} shows the
 stellar positions projected onto the $X$--$Z$ plane, colored by stellar age. The members are
 not uniformly distributed but fall into several spatially separated groups that also differ in
-age. With a visible age gradient between the two big subgroups as well as a small spatially distinct group
-of older stars (15~Myr).
-Considering the velocity data, the right ascension proper motion values further reveal a correlation between stellar ages and velocity as seen in comparison to Figure~\ref{fig:pmra_xz}
+age, with a visible age gradient between the two large subgroups and a small, spatially distinct
+group of older stars (15~Myr).
+Considering the velocity data, the proper motion in right ascension reveals the same division, so
+that ages and velocities appear correlated (Figure~\ref{fig:pmra_xz}).
 
 \begin{figure}[h!]
     \centering
@@ -203,11 +200,11 @@ Considering the velocity data, the right ascension proper motion values further 
 The population spans ages from 1 to 15~Myr, a wider range than the median ages of
 $1$--$3$~Myr quoted in Section~\ref{sec:Taurus}. This is mainly a question of membership:
 the clustering used here also recovers comoving groups of $\sim$12--15~Myr that
-\citet{Luhman2023} assigns to neighbouring associations rather than to Taurus itself.
+\citet{Luhman2023} assigns to neighboring associations rather than to Taurus itself.
 The ages in the two catalogs are moreover determined with different methods. The bulk of the
 sample is nonetheless young with most of the stars between 1 and 7~Myr, and the distribution
 peaks at 3~Myr, in agreement with the median group ages of $1$--$3$~Myr reported by
-\citet{Luhman2023}. The age distribution of the catalog is shown in appendix~\ref{app:age_hist}.
+\citet{Luhman2023}. The age distribution of the catalog is shown in Appendix~\ref{app:age_hist}.
 
 Additionally, Figure~\ref{fig:CMD} shows a color-magnitude diagram (CMD) of the catalog,
 colored by age to highlight the different subgroups, with isochrones for
@@ -262,12 +259,14 @@ Due to the limited number of stars with radial-velocity measurements, these cuts
 
 
 The reconstruction volume is chosen to enclose the resulting catalog, spanning
-$120 \times 75 \times 75~\mathrm{pc}$ around Taurus and discretized on a grid with a cell
+$126 \times 69 \times 81~\mathrm{pc}$ around Taurus and discretized on a grid with a cell
 size of $3~\mathrm{pc}$ per dimension (Section~\ref{sec:nifty}). The data entering the
 inference contain all 557 proper motion measurements and 123 radial velocity values
 left after the quality cuts.
-A three-dimensional representation of the stellar data with stars indicated, of which the radial velocity data was used in the inference, is shown in Figure~\ref{fig:dataset_positions}.
-The purpose of this visualisation is to illustrate the small number of usable rv data which after the quality cuts decreased from the previous one third of the whole catalog to less than a quarter.
+Figure~\ref{fig:dataset_positions} shows a three-dimensional representation of the stellar data, with
+the stars whose radial velocities entered the inference marked separately.
+The purpose of this visualization is to illustrate how few radial velocities remain usable: after the
+quality cuts their share of the catalog drops from one third to less than a quarter.
 Vector-based illustrations of the three-dimensional velocities are provided in Appendix~\ref{app:vectorplots}.
 
 \begin{figure}[h!]
