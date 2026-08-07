@@ -36,9 +36,10 @@ Previously, each star was compared to the grid point at the same corner of the v
 containing it, so that the point of evaluation could be displaced from the star by up to one
 cell, or $3~\mathrm{pc}$, along every axis. The new readout is a trilinear interpolation: the
 field is evaluated at all eight corners of the surrounding voxel and weighted by their proximity
-to the star. This removes the artificial offset between a star and the field value it is compared
-to, so that the response varies continuously with position and the residuals reflect genuine
-disagreement between model and data rather than the discretization of the grid.
+to the star. This removes the spatial offset between a star and the point at which the
+field is evaluated. The readout now varies continuously with position, so stars that share a voxel are no longer
+compared to one and the same grid value, and their residuals depend on where in the cell they sit
+rather than on the grid spacing.
 
 With that said, Figure~\ref{fig:vfield_gaia} presents the resulting velocity field. Vectors are drawn at
 every grid cell, with a mass-density mask hiding the regions that are not covered by data
@@ -285,10 +286,16 @@ of an individual star can go, which is what the next section targets.
 \subsection{Peculiar motions}
 \label{sec:peculiar_motions}
 
-The demonstrations in Section~\ref{sec:Comparison} and the residuals above point at the same
-weakness: the model has no way of absorbing the motion a star has on top of the large-scale
-field. Every deviation has to be paid for by the field itself, so that even a small peculiar velocity turns
-into a residual of several $\sigma$.
+The demonstrations in Section~\ref{sec:Comparison} and the residuals above point at the same gap in
+the model: the uncertainty assigned to a star contains only its measurement error. For the proper
+motions that error is far smaller than the velocity scatter of the stars themselves, so the motion a
+star has on top of the large-scale flow enters the residuals in full and is judged against an
+uncertainty tens of times smaller, reaching several hundred $\sigma$ in the extreme cases of
+Table~\ref{tab:residuals}. The correlated field prior
+limits how closely the field follows individual stars, but it cannot separate stars that share similar
+positions but move differently: a single field can only represent their average motion, and telling
+them apart would require a second field component \citep{Hutschenreuter2026}. With a sample of this size that route is not available
+(Section~\ref{sec:nifty}), so the deviation has to be accounted for on the side of the noise instead.
 
 A simple approach for this is an intrinsic scatter term \citep[Sect.~8]{Hogg2010}. It starts from
 the observation that the offset of a star from a smooth field has two independent causes: the
@@ -300,8 +307,9 @@ is how widely the stars scatter as a population: their peculiar velocities are a
 from one common Gaussian distribution of width $\sigma_\mathrm{int}$, taken to be the same in all
 directions.
 
-Since the two contributions are independent of one another, their variances add, and since both are
-Gaussian, so is their sum. A star is therefore expected to lie further from the field than its
+The measurement errors are already modeled as Gaussian (Section~\ref{sec:nifty}), so both
+contributions are Gaussian and independent of one another: their variances add, and their sum is
+Gaussian again. A star is therefore expected to lie further from the field than its
 measurement error alone would suggest, by an amount set by $\sigma_\mathrm{int}$, and the two enter
 the likelihood added in quadrature. Apart from this new parameter, nothing else at the model changes,
 each star still contributes a single residual between its measurement and the field, only now this
@@ -320,8 +328,13 @@ has to be converted to $\mathrm{mas\,yr^{-1}}$ at the distance $d$ of the respec
     \label{eq:sigma_eff_pm}
 \end{equation}
 with $d$ in kpc. The field is then no longer required to pass through every star; it only has to
-reproduce the stellar velocities to within the width of their own velocity distribution, and the
-weighted residuals of Section~\ref{sec:Validation} become a meaningful measure of the fit again.
+reproduce the stellar velocities to within the width of their own velocity distribution, so that a
+deviation the field cannot represent no longer counts against the fit. However, since $\sigma_\mathrm{int}$
+and the amplitude of the field are constrained by the same data and can be traded against one another,
+the same measurements are explained either by a structured field with little intrinsic scatter or by
+a smoother field with a wider one. Which of the two the inference settles on depends on the prior
+placed on $\sigma_\mathrm{int}$, and a value chosen too generously can absorb velocity differences
+that belong in the field.
 
 The scale of the parameter is set by the region itself, but the $2.7~\mathrm{km\,s^{-1}}$ of
 \citet{Galli2019} cannot be adopted directly: the value is three-dimensional and measures the
@@ -378,10 +391,10 @@ the field is the right choice at all, would need further investigation; the prio
 in a few earlier iterations by comparing the resulting fits. It should also be kept in mind that widening
 the uncertainties improves the fit statistic without necessarily bringing the field closer to the data: the absolute
 differences are, if anything, slightly larger than before, and only the standard they are measured against
-has changed. Since
-$\sigma_\mathrm{int}$ and the amplitude of the field are constrained by the same data, the inference can
-trade one against the other, so the recovered $0.99~\mathrm{km\,s^{-1}}$ should not be read as a
-measurement of the peculiar velocity dispersion in Taurus.
+has changed. As mentioned before, since the inference can
+trade $\sigma_\mathrm{int}$ against the amplitude of the field, the recovered
+$0.99~\mathrm{km\,s^{-1}}$ should not be read as a measurement of the peculiar velocity dispersion
+in Taurus.
 
 The most severe limitation, however, remains the data itself: Taurus holds few stars and even fewer with a
 reliable radial velocity. Compared with pre-Gaia times the sample is immensely better in

@@ -34,9 +34,9 @@ a function of $s$ matters. Rather than a single field, the posterior gives a pro
 produced the data, and its scatter is the uncertainty of the reconstruction
 \citep{Ensslin2023_ITIFT,Ensslin2025}.
 
-In practice, the posterior in Eq.~(\ref{eq:bayes}) cannot be written down or
-sampled from exactly, because the number of unknowns, the field value at every point,
-is far too large. IFT provides the mathematical machinery to approximate this posterior
+In practice, writing the posterior in Eq.~(\ref{eq:bayes}) down analytically requires assumptions
+this model does not make, such as a fixed correlation structure for the field.
+IFT provides the mathematical machinery to approximate this posterior
 numerically, and to do so in a way that also returns uncertainty estimates for the
 reconstructed field, not just a single best-fit map.
 
@@ -59,7 +59,7 @@ association. Given the modest size of the Taurus sample of a few hundred stars, 
 over ten thousand for Sco-Cen, the model is kept
 deliberately simple with each velocity component being described by a single correlated field,
 without attempting to separate the region into several kinematically distinct populations, as
-was done for Sco-Cen, since the data would not reliably constrain such a model.
+was done for Sco-Cen, since the data would likely not constrain such a model.
 
 The three-dimensional velocity field is modeled on a regular grid of $42 \times 23 \times 27$
 cells of $3~\mathrm{pc}$, spanning a volume of $126 \times 69 \times 81~\mathrm{pc}$ around Taurus.
@@ -83,7 +83,8 @@ representation the deviation is generated as
 \end{equation}
 where the $\xi(\mathbf{k})$ are independent random numbers drawn from a standard normal
 distribution, one for each mode. They carry no structure themselves; it is the power spectrum
-$P(k)$ that assigns each mode its typical amplitude on the spatial scale $k^{-1}$. The inverse
+$P(k)$ that assigns each mode its typical amplitude on the spatial scale $k^{-1}$ and thereby fixes
+the correlation structure of the field. The inverse
 Fourier transform $\mathrm{FT}^{-1}$ then adds the weighted modes back together into a field in
 real space.
 The inference only has to find the $\xi$ that reproduce the
@@ -91,11 +92,11 @@ data instead of a correlated value in every grid cell. $P(k)$ itself is not fixe
 amplitude and slope are inferred from the data, so that the balance between small-scale and
 large-scale structure is set by the observations rather than assumed a priori.
 
-In the likelihood, the data enter as observables rather than as space velocities: for each
-star the field is evaluated at its position through interpolation (further discussed in
-Chapter~\ref{sec:Results}) and projected onto the two proper-motion components
-on the sky and, where available, the radial
-velocity along the line of sight, with additive Gaussian measurement noise.
+The likelihood does not compare the field to space velocities, but to the measured quantities.
+For each star the field is evaluated at its position through interpolation
+(further discussed in Chapter~\ref{sec:Results}) and projected onto the two proper-motion
+components on the sky and, where available, the radial velocity along the line of sight, with
+additive Gaussian measurement noise.
 A star without a
 radial velocity therefore constrains the field only within the plane of the sky, but since the
 prior correlates neighboring positions, its missing component is supplied by the stars around
