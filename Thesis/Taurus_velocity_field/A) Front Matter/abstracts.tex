@@ -1,0 +1,26 @@
+%Please consider the following section of the "Formvorschriften für die gedruckte Version"
+%Im Anhang ist eine Zusammenfassung (Abstract) mitzubinden.
+%Ist die Arbeit in einer Fremdsprache verfasst, ist im Anhang jedenfalls eine deutsche Zusammenfassung mitzubinden.
+\chapter{Abstract}
+The kinematics of the Taurus molecular cloud complex have so far mainly been studied through the
+discrete velocities of its individual members. A full three-dimensional space velocity, however,
+requires a radial velocity, which is available for only about one third of the known members, while
+proper motions are measured for essentially all of them. This thesis therefore reconstructs a
+continuous three-dimensional velocity field of the complex from the full stellar sample, using
+information field theory as implemented in \texttt{NIFTy}. Each velocity component is modeled as a
+correlated field on a grid of $3~\mathrm{pc}$ cells spanning $126 \times 69 \times 81~\mathrm{pc}$,
+with a power spectrum inferred from the data. The input catalog consists of 557 members identified with \texttt{SigMA} in
+Gaia~DR3 astrometry, of which 123 contribute a radial velocity after quality cuts.
+The reconstruction reproduces the bulk motion of the complex and resolves velocity differences between
+its subgroups and recovers an age--velocity gradient that is already visible in the stellar data.
+Both the mean motion and the quantities derived from the field, however, depend strongly on the
+individual run of the algorithm: repetitions with a different random seed, with different quality cuts or with a
+modified model yield mean motions that scatter by several $\mathrm{km\,s^{-1}}$, while the posterior
+uncertainty within a single run stays far below that. A comparison of several such runs is therefore
+used to separate features demanded by the data from artifacts of a particular reconstruction. The
+residuals between the stars and the field expose an important limitation of the model: the peculiar
+motion of a star, which is unrelated to the underlying flow, has nowhere to go but into the field
+itself, so the motion of single stars is imprinted on a field that is meant to describe the motion
+of the complex. Granting the stars a common intrinsic
+velocity dispersion, inferred alongside the field, improves quality statistics like residuals,
+but does so by widening the uncertainties rather than by bringing the field closer to the data.

@@ -1,0 +1,14 @@
+\!build/*
+\!literature/*
+\!Template Chapters/*
+
+
+*.md
+
+main.*
+!main.pdf
+!main.tex
+
+!figures/*.pdf
+
+*.cls

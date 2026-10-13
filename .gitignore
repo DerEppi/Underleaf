@@ -59,3 +59,7 @@ __pycache__/
 .env
 venv/
 env/
+
+
+# Additional Projects
+Thesis/Taurus_velocity_field_DE/*

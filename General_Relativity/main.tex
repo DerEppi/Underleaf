@@ -1,0 +1,47 @@
+\documentclass[12pt,a4paper]{article}
+
+\input{preamble}
+
+% Title page with logos (layout of the exercise template)
+\title{
+\vspace{-1cm}
+\begin{minipage}{0.4\textwidth}
+    \includegraphics[width=4cm]{figures/univie.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.4\textwidth}
+    \raggedleft
+    \includegraphics[width=4cm]{figures/astro.png}
+\end{minipage}
+\vspace{0.5cm}
+\\
+\textbf{General Relativity} \\[1ex]
+\textbf{Lecture Notes}\\[1ex]
+\large Lecturer: Aseem Paranjape \\[1ex]
+\large Typeset from handwritten lecture notes (Lectures 01--04) \\[2ex]
+\large University of Vienna \\
+\large Department of Astrophysics
+\vspace{-1cm}
+\date{\today}
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\tableofcontents
+\newpage
+
+% One file per chapter of the course outline. New lectures are appended to the
+% chapter they belong to, or get a new file here.
+\input{chapters/00_outline}
+\input{chapters/01_special_relativity}
+%\input{chapters/02_sr_arbitrary_coordinates}
+%\input{chapters/03_curvature}
+%\input{chapters/04_vacuum_solutions}
+%\input{chapters/05_matter}
+%\input{chapters/06_einstein_equations}
+%\input{chapters/07_cosmology}
+
+\end{document}
