@@ -63,3 +63,17 @@ env/
 
 # Additional Projects
 Thesis/Taurus_velocity_field_DE/*
+
+\!build/*
+\!literature/*
+
+
+*.md
+!README.md
+
+main.*
+!main.tex
+
+!figures/*.pdf
+
+*.cls
